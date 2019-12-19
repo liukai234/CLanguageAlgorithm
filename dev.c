@@ -6,6 +6,7 @@
  * @lastchange: LiuKai
  */
 #include "myhead.h"
+#include "exception.h"
 #define MAX_FILE_NAME 100 // 最大文件名宏
 #define MENU_SEL 2 // 菜单长度宏
 #define MAX_FILE_NUM 1000 // 最大文件数量
@@ -41,6 +42,25 @@ typedef struct linkNode0
 char searchFileName[MAX_FILE_NUM][MAX_FILE_NAME];
 int main(int args, char *argv[])
 {
+    // colorTest
+    PRINT_FONT_BLA  
+    printf("hello world!\n");
+    PRINT_FONT_BLU
+    printf("hello world!\n");
+    PRINT_FONT_RED 
+    printf("hello world!\n");
+    PRINT_FONT_YEL 
+    printf("hello world!\n");
+    PRINT_FONT_GRE 
+    printf("hello world!\n");
+    PRINT_FONT_WHI 
+    printf("hello world!\n");
+    PRINT_FONT_PUR 
+    printf("hello world!\n");
+    PRINT_ATTR_REV
+    printf("hello world!\n");
+    PRINT_ATTR_REC
+
     char path[MAX_FILE_NAME];
     char strSel[MAX_FILE_NAME];
     char inputFileName[MAX_FILE_NAME] = '\0'; // 输入文件名
@@ -96,7 +116,7 @@ void menuPrint(){
 
 /**
  * @description: 在path目录下查找.dat文件
- * author： liukai
+ * @author： liukai
  * @param {type: char*} path
  * @return: void
  * @ver: 1.0 2019/12/19
