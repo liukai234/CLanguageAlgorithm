@@ -7,7 +7,8 @@
  */
 #include "myhead.h"
 #include "exception.h"
-#define MAX_FILE_NAME 100 // 最大文件名宏
+#define MAX_FILE_NAME 100 // 文件名的长度
+#define MAX_STRING 100
 #define MENU_SEL 2 // 菜单长度宏
 #define MAX_FILE_NUM 1000 // 最大文件数量
 char menuSel[MENU_SEL][MAX_FILE_NAME] = {"help", "exit"}; // 菜单索引
@@ -19,17 +20,28 @@ int ls(char* path);
 // mkdir更名为mk
 void mk(char* inputFileName);
 // void del();
+
+
 /**
  * @description: 链表结构体
  * @author：Liukai
  * @ver:1.0 2019/12/18
  * @lastchange:liukai
  */
-typedef struct linkNode0
+/* typedef struct linkNode0
 {
     int data;
     struct linkNode0 *next;
-} linkNode;
+
+} linkNode; */
+
+
+typedef struct margh0{
+    char id[MAX_STRING];
+    char name[MAX_STRING];
+    bool sex; // 性别
+    char age[MAX_STRING];
+}margh;
 
 /**
  * @description: main
@@ -43,7 +55,7 @@ char searchFileName[MAX_FILE_NUM][MAX_FILE_NAME];
 int main(int args, char *argv[])
 {
     // colorTest
-    PRINT_FONT_BLA  
+    PRINT_FONT_BLA 
     printf("hello world!\n");
     PRINT_FONT_BLU
     printf("hello world!\n");
@@ -95,7 +107,6 @@ int main(int args, char *argv[])
             break;
         }
     }
-
     return 0;
 }
 
@@ -158,3 +169,4 @@ void mk(char* inputFileName) {
     }
     fclose(pFile);
 }
+
