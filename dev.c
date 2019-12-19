@@ -13,8 +13,10 @@ char menuSel[MENU_SEL][MAX_FILE_NAME] = {"help", "exit"}; // 菜单索引
 
 // 前向声明[后期会转移至myhead.h文件中]
 void menuPrint();
-int dir(char* path);
-void madir(char* inputFileName);
+// 将dir更名为ls
+int ls(char* path);
+// mkdir更名为mk
+void mk(char* inputFileName);
 // void del();
 /**
  * @description: 链表结构体
@@ -100,7 +102,7 @@ void menuPrint(){
  * @ver: 1.0 2019/12/19
  * @lastchange: liukai
  */
-int dir(char* path) {
+int ls(char* path) {
     long hFile = 0;
     struct _finddata_t fileInfo;
 
@@ -127,7 +129,7 @@ int dir(char* path) {
  * @param {type} 
  * @return: 
  */
-void madir(char* inputFileName) {
+void mk(char* inputFileName) {
     FILE* pFile;
 
     pFile = fopen(inputFileName, "wb"); // 考虑使用txt文件
