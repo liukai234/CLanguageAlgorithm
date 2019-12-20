@@ -36,12 +36,18 @@ void mk(char* inputFileName);
 } linkNode; */
 
 
-typedef struct margh0{
-    char id[MAX_STRING];
+typedef struct info0{
     char name[MAX_STRING];
-    bool sex; // ÐÔ±ð
+    char id[MAX_STRING];
+    char sex[MAX_STRING];
     char age[MAX_STRING];
-}margh;
+    char spouse[MAX_STRING];
+}info;
+
+typedef struct chbrotree0{
+    info myinfo;
+    struct chbrotree0 *firstchild, *rightsibling;
+}chbrotree;
 
 /**
  * @description: main
