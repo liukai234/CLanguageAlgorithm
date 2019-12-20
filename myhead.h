@@ -14,6 +14,11 @@
 #include <windows.h>
 #include <io.h>
 
+#define MAX_FILE_NAME 100 // 文件名的长度
+#define MAX_STRING 100
+#define MENU_SEL 3                                                 // 菜单长度宏
+#define MAX_FILE_NUM 1000 // 最大文件数量
+
 /**
  * @description: printfColor
  * @author: liukai
@@ -50,9 +55,44 @@
 #define PRINT_ATTR_UGLI  printf("\033[25m");//关闭闪烁 
 #define PRINT_ATTR_UREV  printf("\033[27m");//关闭反向图象
 
+/**
+ * @description: 树结构体
+ * @author：Liukai
+ * @ver:1.0 2019/12/20
+ * @lastchange:liukai
+ */
+typedef struct info0
+{
+    char name[MAX_STRING];
+    int id;
+    char sex[MAX_STRING];
+    char age[MAX_STRING];
+    char spouse[MAX_STRING];
+} info;
 
-//前向声明块
+typedef struct chbrotree0
+{
+    info myinfo;
+    struct chbrotree0 *firstchild, *rightsibling;
+} chbrotree;
 
+// 借助一个栈来输出指定前几代人 // 后几代人 // 兄弟节点
+typedef struct linkStack0
+{
+    chbrotree node;
+    struct linkStack0 *next;
+} linkStack;
 
+char menuSel[MENU_SEL][MAX_FILE_NAME] = {"help", "input", "exit"}; // 菜单索引
 
+// 前向声明块
+void menuPrint();
+int ls(char *path);
+void mk(char *inputFileName);
+chbrotree *idFindPerson(chbrotree *root, int id);
+chbrotree *nameFindPerson(chbrotree *root, char *name);
+chbrotree *treeInput(chbrotree *root, info myinfo, char *relation, char *relationName);
+chbrotree *mallocTreeNode(chbrotree *node, info myinfo);
+chbrotree printTreeNode(chbrotree root);
+chbrotree namePrintTreeNode(chbrotree root, char name, int generation, char *param);
 #endif
