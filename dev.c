@@ -2,7 +2,7 @@
  * @description: dev版本
  * @file: dev.c
  * @author: LiuKai
- * @ver: 1.0 2019/12/16
+ * @ver: 2.0 2019/12/21
  * @lastchange: LiuKai
  */
 #include "myhead.h"
@@ -13,7 +13,7 @@
  * @author: LiuKai
  * @param: int args, char *argv[]
  * @return: 0
- * @ver: 1.0 2019/12/16
+ * @ver: 2.0 2019/12/21
  * @lastchange: LiuKai
  */
 char searchFileName[MAX_FILE_NUM][MAX_FILE_NAME];
@@ -42,14 +42,27 @@ int main(int args, char *argv[])
 
     char path[MAX_FILE_NAME];
     char strSel[MAX_FILE_NAME];
-    char inputFileName[MAX_FILE_NAME] = '\0';  // 输入文件名
-    char outputFileName[MAX_FILE_NAME] = '\0'; // 输出文件名
+    char inputFileName[MAX_FILE_NAME] = "\0";  // 输入文件名
+    char outputFileName[MAX_FILE_NAME] = "\0"; // 输出文件名
     bool fileExist = false;                    // 文件是否存在标志， 文件存在fileExist为true
     int indexSel;                              // 菜单选择下标
     bool exitFlag = false;                     // 退出标志，为真表示退出
-    chbrotree *mychbrotree;
+    chbrotree *mychbrotree = NULL;
+
+    /**
+     * @description: 校准countFile and path
+     */
     _getcwd(path, MAX_FILE_NAME); // 获取当前工作路径
     printf("_getcwd: %s\n", path);
+    strcat(path, "\\*.dat");
+    int countFile = ls(path);
+
+    char fileName[MAX_STRING];
+    char name[MAX_STRING];
+    info myinfo;
+    char relation[MAX_STRING];
+    char relationName[MAX_STRING];
+
     printf("Input \"help\" for more.\n");
     while (true)
     {
@@ -68,26 +81,102 @@ int main(int args, char *argv[])
             menuPrint();
             break;
         case 1:
-            info myinfo;
-            char relation[MAX_STRING];
-            char relationName[MAX_STRING];
-            scanf("%s%s", relation, relationName);
-            scanf("%s%s%s%s%s", myinfo.name, myinfo.id, myinfo.sex, myinfo.age, myinfo.spouse);
-            treeInput(mychbrotree, myinfo, relation, relationName);
+            // ls
+            printf("There are %d files in total\n", countFile);
+            for (int i = 0; i < countFile; i++)
+            {
+                printf("%s\n", searchFileName[i]);
+            }
             break;
         case 2:
-            exitFlag = true;
+            // mk
+            scanf("%s", fileName);
+            mk(fileName);
+            countFile = ls(path); // 校准countFile and searchFileName
+            break;
+        case 3:
+            // open
+            while (true)
+            {
+                scanf("%s", inputFileName);
+                for (int i = 0; i < countFile; i++)
+                {
+                    if (!strcmp(inputFileName, searchFileName[i]))
+                    {
+                        fileExist = true;
+                    }
+                }
+                if (fileExist)
+                {
+                    break;
+                }
+                else
+                {
+                    printf("Input error or file does not exist\n");
+                }
+            }
+            if (fileExist && !strcmp(outputFileName, inputFileName))
+            {
+                // 对同一个文件进行操作 // 文件已经打开
+                printf("file already open\n");
+            }
+            else if (fileExist)
+            {
+                if (mychbrotree != NULL)
+                {
+                    printf("Saving previous data file %s...\n", outputFileName);
+                    save(mychbrotree, outputFileName);
+                    printf("Save finished\n");
+                }
+                strcpy(outputFileName, inputFileName);
+                printf("Initialize memory, load data to memory\n");
+                mychbrotree = load(mychbrotree, inputFileName);
+                printf("Load finished\n");
+            }
+            else {
+                printf("File does not exist\n");
+            }
+            fileExist = false;
+            break;
+        case 4:
+            // close
+            save(mychbrotree, outputFileName);
+            printf("Save finished\n");
+            mychbrotree = NULL;
             break;
 
-        defaule:
+        case 5:
+            // do idFindPerson
+            break;
+        case 6:
+
+            scanf("%s", name);
+            nameFindPerson(mychbrotree, name);
+            break;
+
+        case 7:
+            // input
+            scanf("%s%s", relation, relationName);
+            scanf("%s%s%s%s", myinfo.name, myinfo.sex, myinfo.age, myinfo.spouse);
+            mychbrotree = treeInput(mychbrotree, myinfo, relation, relationName);
+            break;
+        case 8:
+            printTreeNode(*mychbrotree);
+            break;
+        case 9:
+            exitFlag = true;
+            break;
+        default:
             printf("Command error or does not exist\n");
+            break;
         }
+        printf("Execution completed\n");
         if (exitFlag)
         {
             break;
         }
     }
-    system("pause");
+    // system("pause");
     return 0;
 }
 
@@ -96,14 +185,22 @@ int main(int args, char *argv[])
  * @author: LiuKai
  * @param: void
  * @return: void
- * @ver: 1.0 2019/12/18
+ * @ver: 2.0 2019/12/21
  * @lastchange: LiuKai
  */
 void menuPrint()
 {
-    printf("help           format: help\n"
-           "treeInput      format: input [name][id][sex][age][spouse]"
-           "exit           format: exit\n");
+    printf("help             format: help\n"
+           "ls               format: ls\n"
+           "mk               format: mk [*.dat]\n"
+           "open             format: open [*.dat]\n"
+           "load             format: laod [*.dat]\n"
+           "save             format: save [*.dat]\n"
+           "idFindPerson     format: idFindPerson [id]\n"
+           "nameFindPerson   format: nameFindPerson [name]\n"
+           "treeInput        format: input [relation][relationName][name][id][sex][age][spouse]"
+           "printTreeNode    format: printTreeNode\n"
+           "exit             format: exit\n");
 }
 
 /**
@@ -111,24 +208,20 @@ void menuPrint()
  * @author： liukai
  * @param {type: char*} path
  * @return: void
- * @ver: 1.0 2019/12/19
+ * @ver: 2.0 2019/12/21
  * @lastchange: liukai
  */
 int ls(char *path)
 {
     long hFile = 0;
     struct _finddata_t fileInfo;
-
     int count = 0;
-    // \\* 代表要遍历所有的类型, \\*.dat表示遍历dat类型文件
     if ((hFile = _findfirst(path, &fileInfo)) == -1)
     {
-        // printf("暂无数据文件");
         return 0;
     }
     do
     {
-        // printf("%s\n", fileInfo.name);
         strcpy(searchFileName[count], fileInfo.name);
         // (fileInfo.attrib & _A_SUBDIR ? "[folder]" : "[file]")
         // 判断文件的属性是文件夹还是文件
@@ -139,9 +232,12 @@ int ls(char *path)
 }
 
 /**
- * @description: 建立新数据文件
- * @param {type} 
- * @return: 
+ * @description: mk
+ * @author： liukai
+ * @param {type: char*} path
+ * @return: void
+ * @ver: 2.0 2019/12/21
+ * @lastchange: liukai
  */
 void mk(char *inputFileName)
 {
@@ -155,6 +251,66 @@ void mk(char *inputFileName)
     fclose(pFile);
 }
 // void del();
+
+/**
+ * @description: load
+ * @author： liukai
+ * @param {type: char*} path
+ * @return: void
+ * @ver: 2.0 2019/12/21
+ * @lastchange: liukai
+ */
+chbrotree *load(chbrotree *root, char *fileName)
+{
+    FILE *input;
+    input = fopen(fileName, "rb");
+    if (!input)
+    {
+        PRINT_FONT_RED
+        fprintf(stderr, "%s\n", strerror(errno));
+        return NULL;
+    }
+    chbrotree *p;
+    p = (chbrotree *)malloc(sizeof(chbrotree));
+    while (fread(p, sizeof(struct chbrotree0), 1, input))
+    {
+        treeInput(root, p->myinfo, "父亲", p->myinfo.father);
+    }
+}
+
+/**
+ * @description: save
+ * @author： liukai
+ * @param {type: char*} path
+ * @return: void
+ * @ver: 2.0 2019/12/21
+ * @lastchange: liukai
+ */
+bool save(chbrotree *root, char *fileName)
+{
+    FILE *output;
+    chbrotree *p, *pre;
+    if (!output)
+    {
+        PRINT_FONT_RED
+        fprintf(stderr, "%s\n", strerror(errno));
+        return false;
+    }
+    pre = root;
+    while (pre)
+    {
+        p = pre;
+        while (p)
+        {
+            fwrite(p, sizeof(struct chbrotree0), 1, output); // debug;
+            p = p->rightsibling;
+        }
+        pre = pre->firstchild;
+    }
+    fclose(output);
+    return true;
+}
+
 /**
  * @description: findPerson
  * @author: LiuKai
@@ -204,7 +360,7 @@ chbrotree *nameFindPerson(chbrotree *root, char *name)
  * @author: LiuKai
  * @param: chbrotree *root, info myinfo, char *relation, char *relationName
  * @return: chbrotree *root
- * @ver: 1.0 2019/12/20
+ * @ver: 2.0 2019/12/21
  * @lastchange: LiuKai
  */
 chbrotree *treeInput(chbrotree *root, info myinfo, char *relation, char *relationName)
@@ -214,21 +370,33 @@ chbrotree *treeInput(chbrotree *root, info myinfo, char *relation, char *relatio
 
     if (root == NULL)
     {
+        strcpy(node->myinfo.father, relationName);
         root = node;
         return root;
     }
     // 输入节点与该节点的父亲 // 母亲
-    chbrotree *pre = findPerson(root, relationName);
+    chbrotree *pre = nameFindPerson(root, relationName);
     if (pre == NULL)
     {
         PRINT_FONT_RED
-        printf("%s%s is not exist\n");
-        printf("Modification cannot be saved\n");
+        printf("%s%s is not exist and modification cannot be saved\n");
         return root;
+    } 
+    if (!strcmp(relation, "父亲") || !strcmp(relation, "母亲"))
+    {
+        strcpy(node->myinfo.father, relationName);
+        chbrotree *next = pre->firstchild;
+        pre->firstchild = node;
+        node->rightsibling = next;
     }
-    chbrotree *next = pre->firstchild;
-    pre->firstchild = node;
-    node->rightsibling = next;
+    // !!!在这里讨论其他的亲属关系
+    else
+    {
+        chbrotree *next = pre->rightsibling;
+        pre->rightsibling = node;
+        node->rightsibling = next;
+        strcpy(node->myinfo.father, pre->myinfo.father); // 更新不是以父亲关系查找到的人的father信息
+    }
     return root;
 }
 
