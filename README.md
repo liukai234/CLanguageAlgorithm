@@ -1,4 +1,11 @@
 # Team private project
+---
+# update
+# ver 2.0 2016/12/21
+1. 更新并完善的数据文件处理机制 详细：可以新建，查看，关闭数据文件
+2. 树型数据结构基本完成
+3. 遗留bug： 160行treeInput无法输入到myinfo结构体中 305行：save中的fwrite无法写入
+4. case 5后的代码还未进行检验
 # ver 1.0 2019/12/16
 # [注]：改动全部添加在dev.c文件上，不要动release.c文件
 ## 需求分析
