@@ -121,7 +121,7 @@ int main(int args, char *argv[])
                     break;
                 }
             }
-            if(!fileExist)
+            if (!fileExist)
             {
                 printf("File does not exist\n");
             }
@@ -293,7 +293,7 @@ bool save(chbrotree *root, char *fileName)
         p = pre;
         while (p)
         {
-            fwrite(p, sizeof(struct chbrotree0), 1, output); // debug;
+            fwrite(p, sizeof(struct chbrotree0), 1, output);
             p = p->rightsibling;
         }
         pre = pre->firstchild;
@@ -412,9 +412,11 @@ chbrotree *mallocTreeNode(chbrotree *node, info myinfo)
 
 chbrotree *printTreeNode(chbrotree *root)
 {
-    if(root == NULL){
+    int rowTotal = 0;
+    /*     if (root == NULL)
+    {
         return NULL;
-    }
+    } */
     // 对父节点标红
     // linkStack mystack;
     /* if (colorCount == 0)
@@ -422,10 +424,38 @@ chbrotree *printTreeNode(chbrotree *root)
         PRINT_FONT_RED
     }
     colorCount ++; */
-    printf("%s %d %s %s %s\n", root->myinfo.name, root->myinfo.id, root->myinfo.sex, root->myinfo.age, root->myinfo.spouse);
+    // 设计输出表格
+    /*
+    +---------+----------+--------+-------+----------+
+    |Name     |ID        |sex     |age    |Spouse    |          
+    +---------+----------+--------+-------+----------+
+    |1        |2         |3       |4      |5         |
+    +---------+----------+--------+-------+----------+
+    1 rows in table
+    */
+    /* printf("%s %d %s %s %s\n", root->myinfo.name, root->myinfo.id, root->myinfo.sex, root->myinfo.age, root->myinfo.spouse);
     printTreeNode(root->rightsibling);
     // PRINT_FONT_RED
-    printTreeNode(root->firstchild);
+    printTreeNode(root->firstchild); */
+    // 将代码改为非递归形式
+    chbrotree *p, *pre;
+    pre = root;
+    printf("+----------+----------+----------+----------+----------+\n"
+           "|Name      |ID        |Sex       |Age       |Spouse    |\n"
+           "+----------+----------+----------+----------+----------+\n");
+    while (pre)
+    {
+        p = pre;
+        while (p)
+        {
+            printf("|%-10s|%-10d|%-10s|%-10s|%-10s|\n", root->myinfo.name, root->myinfo.id, root->myinfo.sex, root->myinfo.age, root->myinfo.spouse);
+            printf("+----------+----------+----------+----------+----------+\n");
+            rowTotal++;
+            p = p->rightsibling;
+        }
+        pre = pre->firstchild;
+    }
+    printf("%d rows in table\n", rowTotal);
 }
 
 // 参数param表示输出父系// 母系 // 兄弟
