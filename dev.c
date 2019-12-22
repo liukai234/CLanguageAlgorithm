@@ -23,21 +23,13 @@ int main(int args, char *argv[])
 {
     // colorTest
     PRINT_FONT_BLA
-    printf("hello world!\n");
     PRINT_FONT_BLU
-    printf("hello world!\n");
     PRINT_FONT_RED
-    printf("hello world!\n");
     PRINT_FONT_YEL
-    printf("hello world!\n");
     PRINT_FONT_GRE
-    printf("hello world!\n");
     PRINT_FONT_WHI
-    printf("hello world!\n");
     PRINT_FONT_PUR
-    printf("hello world!\n");
     PRINT_ATTR_REV
-    printf("hello world!\n");
     PRINT_ATTR_REC
 
     char path[MAX_FILE_NAME];
@@ -66,6 +58,17 @@ int main(int args, char *argv[])
     printf("Input \"help\" for more.\n");
     while (true)
     {
+        PRINT_FONT_GRE
+        if (mychbrotree)
+        {
+            printf("dev\\%s> ", inputFileName);
+        }
+        else
+        {
+            printf("dev> ");
+        }
+        PRINT_ATTR_REC
+
         // 检索命令键的键值
         scanf("%s", strSel);
         for (indexSel = 0; indexSel < MENU_SEL; indexSel++)
@@ -156,7 +159,7 @@ int main(int args, char *argv[])
             exitFlag = true;
             break;
         default:
-            printf("Command error or does not exist\n");
+            printf("'%s' is not an internal command\n", strSel);
             break;
         }
         printf("Execution completed\n");
@@ -410,7 +413,6 @@ chbrotree *mallocTreeNode(chbrotree *node, info myinfo)
     return node;
 }
 
-
 /**
  * @description: chbrotree *printTreeNode
  * @author: LiuKai
@@ -448,8 +450,13 @@ chbrotree *printTreeNode(chbrotree *root)
     printTreeNode(root->firstchild); */
     // 将代码改为非递归形式
     chbrotree *p, *pre;
+    clock_t start, end;
+    float timing = 0.0;
     pre = root;
+    start = clock();
+    PRINT_FONT_RED
     printf(">>>\n");
+    PRINT_ATTR_REC
     printf("+----------+----------+----------+----------+----------+\n"
            "|Name      |ID        |Sex       |Age       |Spouse    |\n"
            "+----------+----------+----------+----------+----------+\n");
@@ -465,7 +472,9 @@ chbrotree *printTreeNode(chbrotree *root)
         }
         pre = pre->firstchild;
     }
-    printf("%d rows in table\n", rowTotal);
+    end = clock();
+    timing = (float)(end - start) / CLOCKS_PER_SEC;
+    printf("%d rows in table <%.2f sec>\n", rowTotal, timing);
 }
 
 // 参数param表示输出父系// 母系 // 兄弟
