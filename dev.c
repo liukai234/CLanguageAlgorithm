@@ -22,15 +22,23 @@ int colorCount = 0;
 int main(int args, char *argv[])
 {
     // colorTest
-    PRINT_FONT_BLA
+    /* PRINT_FONT_BLA
+    printf("Hello world.\n");
     PRINT_FONT_BLU
+    printf("Hello world.\n");
     PRINT_FONT_RED
+    printf("Hello world.\n");
     PRINT_FONT_YEL
+    printf("Hello world.\n");
     PRINT_FONT_GRE
+    printf("Hello world.\n");
     PRINT_FONT_WHI
+    printf("Hello world.\n");
     PRINT_FONT_PUR
+    printf("Hello world.\n");
     PRINT_ATTR_REV
-    PRINT_ATTR_REC
+    printf("Hello world.\n");
+    PRINT_ATTR_REC */
 
     char path[MAX_FILE_NAME];
     char strSel[MAX_FILE_NAME];
@@ -71,6 +79,7 @@ int main(int args, char *argv[])
 
         // 检索命令键的键值
         scanf("%s", strSel);
+        // add del and clear
         for (indexSel = 0; indexSel < MENU_SEL; indexSel++)
         {
             if (!strcmp(strSel, menuSel[indexSel]))
@@ -80,10 +89,10 @@ int main(int args, char *argv[])
         }
         switch (indexSel)
         {
-        case 0:
+        case MENU_PRINT:
             menuPrint();
             break;
-        case 1:
+        case LS:
             // ls
             printf("There are %d files in total\n", countFile);
             for (int i = 0; i < countFile; i++)
@@ -91,13 +100,13 @@ int main(int args, char *argv[])
                 printf("%s\n", searchFileName[i]);
             }
             break;
-        case 2:
+        case MK:
             // mk
             scanf("%s", fileName);
             mk(fileName);
             countFile = ls(path); // 校准countFile and searchFileName
             break;
-        case 3:
+        case OPEN:
             // open // load
             scanf("%s", inputFileName);
             for (int i = 0; i < countFile; i++)
@@ -117,10 +126,13 @@ int main(int args, char *argv[])
                         mychbrotree = NULL;
                         printf("Save finished\n");
                     }
-                    strcpy(outputFileName, inputFileName);
-                    printf("Initialize memory, load data to memory\n");
-                    mychbrotree = load(mychbrotree, inputFileName);
-                    printf("Load finished\n");
+                    else
+                    {
+                        strcpy(outputFileName, inputFileName);
+                        printf("Initialize memory, load data to memory\n");
+                        mychbrotree = load(mychbrotree, inputFileName);
+                        printf("Load finished\n");
+                    }
                     break;
                 }
             }
@@ -130,32 +142,70 @@ int main(int args, char *argv[])
             }
             fileExist = false;
             break;
-        case 4:
+        case CLOSE:
             // close
             save(mychbrotree, outputFileName);
             printf("Save finished\n");
+            // 没有释放内存
             mychbrotree = NULL;
+            *outputFileName = '\0';
             break;
-
-        case 5:
+        case DEL:
+            // del
+            scanf("%s", inputFileName);
+            if (!remove(inputFileName))
+            {
+                printf("Delete successful\n");
+                countFile = ls(path);
+            }
+            else
+            {
+                PRINT_FONT_RED
+                fprintf(stderr, "%s\n", strerror(errno));
+                PRINT_ATTR_REC
+            }
+            // 如果删除的文件和当前打开的文件是同一个文件则释放mychbrotree
+            if (!strcmp(inputFileName, outputFileName))
+            {
+                mychbrotree = delAllTree(mychbrotree);
+            }
+            break;
+        case CLEAR:
+            // clear清空正在打开的数据文件
+            PRINT_FONT_RED
+            printf("Empty this file?\n");
+            PRINT_ATTR_REC
+            printf("continue?(input 'y' or 'Y' to continue)\n");
+            char consel[1];
+            scanf("%s", consel);
+            if (consel[0] == 'Y' || consel[0] == 'y')
+            {
+                mychbrotree = delAllTree(mychbrotree);
+                save(mychbrotree, inputFileName);
+                printf("clear successful\n");
+            }
+            else
+            {
+                printf("operation aborted\n");
+            }
+            break;
+        case ID_FIND_PERSON:
             // do idFindPerson
             break;
-        case 6:
-
+        case NAME_FIND_PERSON:
             scanf("%s", name);
             nameFindPerson(mychbrotree, name);
             break;
-
-        case 7:
+        case INPUT:
             // input
             scanf("%s%s", relation, relationName);
             scanf("%s%s%s%s", myinfo.name, myinfo.sex, myinfo.age, myinfo.spouse);
             mychbrotree = treeInput(mychbrotree, myinfo, relation, relationName);
             break;
-        case 8:
+        case PRINT_TREE_NODE:
             printTreeNode(mychbrotree);
             break;
-        case 9:
+        case EXIT:
             exitFlag = true;
             break;
         default:
@@ -374,9 +424,10 @@ chbrotree *treeInput(chbrotree *root, info myinfo, char *relation, char *relatio
     {
         PRINT_FONT_RED
         printf("%s%s is not exist and modification cannot be saved\n");
+        PRINT_ATTR_REC
         return root;
     }
-    if (!strcmp(relation, "父亲") || !strcmp(relation, "母亲"))
+    if (!strcmp(relation, "father") || !strcmp(relation, "mother"))
     {
         strcpy(node->myinfo.father, relationName);
         chbrotree *next = pre->firstchild;
@@ -392,6 +443,22 @@ chbrotree *treeInput(chbrotree *root, info myinfo, char *relation, char *relatio
         strcpy(node->myinfo.father, pre->myinfo.father); // 更新不是以父亲关系查找到的人的father信息
     }
     return root;
+}
+
+/**
+ * @description: 释放除头结点外的所有节点的内存
+ * @param {type}
+ * @return: head;
+ */
+chbrotree *delAllTree(chbrotree *root)
+{
+    if (root->rightsibling == NULL && root->firstchild == NULL)
+    {
+        free(root);
+        return NULL;
+    }
+    delAllTree(root->rightsibling);
+    delAllTree(root->firstchild);
 }
 
 /**
