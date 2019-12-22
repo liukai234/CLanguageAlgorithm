@@ -13,6 +13,7 @@
 #include <stdbool.h>
 #include <windows.h>
 #include <io.h>
+#include <time.h>
 
 #define MAX_FILE_NAME 100 // 文件名的长度
 #define MAX_STRING 100
