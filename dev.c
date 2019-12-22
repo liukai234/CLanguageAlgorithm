@@ -440,6 +440,7 @@ chbrotree *printTreeNode(chbrotree *root)
     // 将代码改为非递归形式
     chbrotree *p, *pre;
     pre = root;
+    printf(">>>\n");
     printf("+----------+----------+----------+----------+----------+\n"
            "|Name      |ID        |Sex       |Age       |Spouse    |\n"
            "+----------+----------+----------+----------+----------+\n");
