@@ -95,45 +95,34 @@ int main(int args, char *argv[])
             countFile = ls(path); // 校准countFile and searchFileName
             break;
         case 3:
-            // open
-            while (true)
+            // open // load
+            scanf("%s", inputFileName);
+            for (int i = 0; i < countFile; i++)
             {
-                scanf("%s", inputFileName);
-                for (int i = 0; i < countFile; i++)
+                if (!strcmp(inputFileName, searchFileName[i]))
                 {
-                    if (!strcmp(inputFileName, searchFileName[i]))
+                    fileExist = true;
+                    if (!strcmp(outputFileName, inputFileName))
                     {
-                        fileExist = true;
+                        printf("file already open\n");
+                        break;
                     }
-                }
-                if (fileExist)
-                {
+                    if (mychbrotree != NULL)
+                    {
+                        printf("Saving previous data file to %s...\n", outputFileName);
+                        save(mychbrotree, outputFileName);
+                        mychbrotree = NULL;
+                        printf("Save finished\n");
+                    }
+                    strcpy(outputFileName, inputFileName);
+                    printf("Initialize memory, load data to memory\n");
+                    mychbrotree = load(mychbrotree, inputFileName);
+                    printf("Load finished\n");
                     break;
                 }
-                else
-                {
-                    printf("Input error or file does not exist\n");
-                }
             }
-            if (fileExist && !strcmp(outputFileName, inputFileName))
+            if(!fileExist)
             {
-                // 对同一个文件进行操作 // 文件已经打开
-                printf("file already open\n");
-            }
-            else if (fileExist)
-            {
-                if (mychbrotree != NULL)
-                {
-                    printf("Saving previous data file %s...\n", outputFileName);
-                    save(mychbrotree, outputFileName);
-                    printf("Save finished\n");
-                }
-                strcpy(outputFileName, inputFileName);
-                printf("Initialize memory, load data to memory\n");
-                mychbrotree = load(mychbrotree, inputFileName);
-                printf("Load finished\n");
-            }
-            else {
                 printf("File does not exist\n");
             }
             fileExist = false;
@@ -161,7 +150,7 @@ int main(int args, char *argv[])
             mychbrotree = treeInput(mychbrotree, myinfo, relation, relationName);
             break;
         case 8:
-            printTreeNode(*mychbrotree);
+            printTreeNode(mychbrotree);
             break;
         case 9:
             exitFlag = true;
@@ -270,12 +259,13 @@ chbrotree *load(chbrotree *root, char *fileName)
         fprintf(stderr, "%s\n", strerror(errno));
         return NULL;
     }
-    chbrotree *p;
+    chbrotree *p, *pre;
     p = (chbrotree *)malloc(sizeof(chbrotree));
     while (fread(p, sizeof(struct chbrotree0), 1, input))
     {
-        treeInput(root, p->myinfo, "父亲", p->myinfo.father);
+        root = treeInput(root, p->myinfo, "父亲", p->myinfo.father);
     }
+    return root;
 }
 
 /**
@@ -290,6 +280,7 @@ bool save(chbrotree *root, char *fileName)
 {
     FILE *output;
     chbrotree *p, *pre;
+    output = fopen(fileName, "wb");
     if (!output)
     {
         PRINT_FONT_RED
@@ -381,7 +372,7 @@ chbrotree *treeInput(chbrotree *root, info myinfo, char *relation, char *relatio
         PRINT_FONT_RED
         printf("%s%s is not exist and modification cannot be saved\n");
         return root;
-    } 
+    }
     if (!strcmp(relation, "父亲") || !strcmp(relation, "母亲"))
     {
         strcpy(node->myinfo.father, relationName);
@@ -419,8 +410,11 @@ chbrotree *mallocTreeNode(chbrotree *node, info myinfo)
     return node;
 }
 
-chbrotree printTreeNode(chbrotree root)
+chbrotree *printTreeNode(chbrotree *root)
 {
+    if(root == NULL){
+        return NULL;
+    }
     // 对父节点标红
     // linkStack mystack;
     /* if (colorCount == 0)
@@ -428,10 +422,10 @@ chbrotree printTreeNode(chbrotree root)
         PRINT_FONT_RED
     }
     colorCount ++; */
-    printf("%s %d %s %s %s", root.myinfo.name, root.myinfo.id, root.myinfo.sex, root.myinfo.age, root.myinfo.spouse);
-    printTreeNode(*root.rightsibling);
+    printf("%s %d %s %s %s\n", root->myinfo.name, root->myinfo.id, root->myinfo.sex, root->myinfo.age, root->myinfo.spouse);
+    printTreeNode(root->rightsibling);
     // PRINT_FONT_RED
-    printTreeNode(*root.firstchild);
+    printTreeNode(root->firstchild);
 }
 
 // 参数param表示输出父系// 母系 // 兄弟
