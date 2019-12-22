@@ -1,7 +1,13 @@
 # Team private project
 ---
 # update
-# ver 2.0 2016/12/21
+
+# 2019/12/22 
+1. 160行treeInput无法输入到myinfo结构体中的bug无法复现
+2. save中的fwrite无法写入已修复::由于output为分配文件指针
+3. 重构case 3: open, 优化代码
+4. 文件基本操作 输入 输出 新建 读取 关闭 保存部分的已知bug已排除
+# ver 2.0 2019/12/21
 1. 更新并完善的数据文件处理机制 详细：可以新建，查看，关闭数据文件
 2. 树型数据结构基本完成
 3. 遗留bug： 160行treeInput无法输入到myinfo结构体中 305行：save中的fwrite无法写入
