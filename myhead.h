@@ -17,8 +17,34 @@
 
 #define MAX_FILE_NAME 100 // 文件名的长度
 #define MAX_STRING 100
-#define MENU_SEL 10       // 菜单长度宏
+#define MENU_SEL 12       // 菜单长度宏
 #define MAX_FILE_NUM 1000 // 最大文件数量
+
+#define MENU_PRINT 0
+#define LS 1
+#define MK 2
+#define OPEN 3
+#define CLOSE 4
+#define DEL 5
+#define ID_FIND_PERSON 6
+#define NAME_FIND_PERSON 7
+#define INPUT 8
+#define PRINT_TREE_NODE 9
+#define EXIT 10
+#define CLEAR 11
+
+char menuSel[MENU_SEL][MAX_FILE_NAME] = {"help",
+                                         "ls",
+                                         "mk",
+                                         "open",
+                                         "close",
+                                         "del",
+                                         "idFindPerson",
+                                         "nameFindPerson",
+                                         "treeInput",
+                                         "printTreeNode",
+                                         "exit",
+                                         "clear"}; // 菜单索引
 
 /**
  * @description: printfColor
@@ -70,6 +96,7 @@ typedef struct info0
     char sex[MAX_STRING];
     char age[MAX_STRING];
     char spouse[MAX_STRING];
+    // ！！！应该增加一项备注char note[MAX_STRING];
 } info;
 
 typedef struct chbrotree0
@@ -85,9 +112,6 @@ typedef struct linkStack0
     struct linkStack0 *next;
 } linkStack;
 
-char menuSel[MENU_SEL][MAX_FILE_NAME] = {"help", "ls", "mk", "open", "close",
-                                         "idFindPerson", "nameFindPerson", "treeInput", "printTreeNode", "exit"}; // 菜单索引
-
 // 前向声明块
 void menuPrint();
 int ls(char *path);
@@ -100,4 +124,5 @@ chbrotree *treeInput(chbrotree *root, info myinfo, char *relation, char *relatio
 chbrotree *mallocTreeNode(chbrotree *node, info myinfo);
 chbrotree *printTreeNode(chbrotree *root);
 chbrotree namePrintTreeNode(chbrotree root, char name, int generation, char *param);
+chbrotree *delAllTree(chbrotree *root);
 #endif
