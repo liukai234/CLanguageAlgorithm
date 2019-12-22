@@ -410,6 +410,15 @@ chbrotree *mallocTreeNode(chbrotree *node, info myinfo)
     return node;
 }
 
+
+/**
+ * @description: chbrotree *printTreeNode
+ * @author: LiuKai
+ * @param: chbrotree *root
+ * @return: void
+ * @ver: 1.0 2019/12/22
+ * @lastchange: LiuKai
+ */
 chbrotree *printTreeNode(chbrotree *root)
 {
     int rowTotal = 0;
