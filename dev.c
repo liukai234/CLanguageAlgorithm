@@ -471,17 +471,15 @@ chbrotree *treeInput(chbrotree *root, info myinfo, char *relation, char *relatio
     if (!strcmp(relation, "father") || !strcmp(relation, "mother"))
     {
         strcpy(node->myinfo.father, relationName);
+        node->myfather = pre;
         chbrotree *next = pre->firstchild;
         pre->firstchild = node;
         node->rightsibling = next;
     }
     // !!!在这里讨论其他的亲属关系
-    else
+    else if ((relation, "uncle") || (relation, "aunt"))
     {
-        chbrotree *next = pre->rightsibling;
-        pre->rightsibling = node;
-        node->rightsibling = next;
-        strcpy(node->myinfo.father, pre->myinfo.father); // 更新不是以父亲关系查找到的人的father信息
+        chbrotree *gfather = pre->myfather;
     }
     return root;
 }
