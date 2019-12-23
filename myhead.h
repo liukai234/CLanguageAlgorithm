@@ -99,6 +99,7 @@ typedef struct info0
 typedef struct chbrotree0
 {
     info myinfo;
+    struct chbrotree0 *myfather;
     struct chbrotree0 *firstchild; //第一个后代
     struct chbrotree0 *rightsibling; //自己的兄弟
 } chbrotree;
