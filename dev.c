@@ -3,7 +3,6 @@
  * @file: dev.c
  * @author: LiuKai
  * @ver: 2.0 2019/12/21
- * @lastchange: LiuKai
  */
 #include "myhead.h"
 #include "exception.h"
@@ -14,7 +13,6 @@
  * @param: int args, char *argv[]
  * @return: 0
  * @ver: 2.0 2019/12/21
- * @lastchange: LiuKai
  */
 char searchFileName[MAX_FILE_NUM][MAX_FILE_NAME];
 int ID = 0; // 全局变量ID为每一个人的唯一身份
@@ -257,7 +255,6 @@ int main(int args, char *argv[])
  * @param: void
  * @return: void
  * @ver: 2.0 2019/12/21
- * @lastchange: LiuKai
  */
 void menuPrint()
 {
@@ -281,7 +278,6 @@ void menuPrint()
  * @param {type: char*} path
  * @return: void
  * @ver: 2.0 2019/12/21
- * @lastchange: liukai
  */
 int ls(char *path)
 {
@@ -309,7 +305,6 @@ int ls(char *path)
  * @param {type: char*} path
  * @return: void
  * @ver: 2.0 2019/12/21
- * @lastchange: liukai
  */
 void mk(char *inputFileName)
 {
@@ -330,7 +325,6 @@ void mk(char *inputFileName)
  * @param {type: char*} path
  * @return: void
  * @ver: 2.0 2019/12/21
- * @lastchange: liukai
  */
 chbrotree *load(chbrotree *root, char *fileName)
 {
@@ -359,7 +353,6 @@ chbrotree *load(chbrotree *root, char *fileName)
  * @param {type: char*} path
  * @return: void
  * @ver: 2.0 2019/12/21
- * @lastchange: liukai
  */
 bool save(chbrotree *root, char *fileName)
 {
@@ -393,7 +386,6 @@ bool save(chbrotree *root, char *fileName)
  * @param: chbrotree *root, int id
  * @return: chbrotree *root
  * @ver: 1.0 2019/12/20
- * @lastchange: LiuKai
  */
 chbrotree *idFindPerson(chbrotree *root, int id)
 {
@@ -415,7 +407,6 @@ chbrotree *idFindPerson(chbrotree *root, int id)
  * @param: chbrotree *root, char *name
  * @return: chbrotree *root
  * @ver: 1.0 2019/12/20
- * @lastchange: LiuKai
  */
 // set flag
 chbrotree *nameFindPerson(chbrotree *root, char *name)
@@ -456,7 +447,6 @@ chbrotree *nameFindPerson(chbrotree *root, char *name)
  * @param: chbrotree *root, info myinfo, char *relation, char *relationName
  * @return: chbrotree *root
  * @ver: 2.0 2019/12/21
- * @lastchange: LiuKai
  */
 chbrotree *treeInput(chbrotree *root, info myinfo, char *relation, char *relationName)
 {
@@ -498,8 +488,10 @@ chbrotree *treeInput(chbrotree *root, info myinfo, char *relation, char *relatio
 
 /**
  * @description: 释放除头结点外的所有节点的内存
+ * @autor: liuxiaoxia
  * @param {type}
  * @return: head;
+ * @ver: 1.0 2019/12/23
  */
 chbrotree *delAllTree(chbrotree *root)
 {
@@ -518,7 +510,6 @@ chbrotree *delAllTree(chbrotree *root)
  * @param: chbrotree *root, info myinfo
  * @return: chbrotree *node
  * @ver: 1.0 2019/12/20
- * @lastchange: LiuKai
  */
 chbrotree *mallocTreeNode(chbrotree *node, info myinfo)
 {
@@ -537,7 +528,6 @@ chbrotree *mallocTreeNode(chbrotree *node, info myinfo)
  * @param: chbrotree *root
  * @return: void
  * @ver: 1.0 2019/12/22
- * @lastchange: LiuKai
  */
 chbrotree *printTreeNode(chbrotree *root)
 {
