@@ -106,11 +106,11 @@ typedef struct chbrotree0
 } chbrotree;
 
 // 借助一个栈来输出指定前几代人 // 后几代人 // 兄弟节点
-typedef struct linkStack0
+typedef struct linkQueue0
 {
     chbrotree node;
-    struct linkStack0 *next;
-} linkStack;
+    struct linkQueue0 *next;
+} linkQueue;
 
 // 前向声明块
 void menuPrint();
