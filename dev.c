@@ -430,7 +430,7 @@ chbrotree *nameFindPerson(chbrotree *root, char *name)
         p = pre;
         while (p)
         {
-            if (!strcmp(root->myinfo.name, name))
+            if (!strcmp(p->myinfo.name, name))
             {
                 return p;
             }
