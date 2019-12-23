@@ -397,16 +397,22 @@ bool save(chbrotree *root, char *fileName)
  */
 chbrotree *idFindPerson(chbrotree *root, int id)
 {
-    if (root == NULL)
+    chbrotree *p, *pre;
+    pre = root;
+    while (pre)
     {
-        return NULL;
+        p = pre;
+        while (p)
+        {
+            if (p->myinfo.id == id)
+            {
+                return p;
+            }
+            p = p->rightsibling;
+        }
+        pre = pre->firstchild;
     }
-    if (root->myinfo.id == id)
-    {
-        return root;
-    }
-    idFindPerson(root->firstchild, id);
-    idFindPerson(root->rightsibling, id);
+    return NULL;
 }
 
 /**
@@ -432,8 +438,11 @@ chbrotree *nameFindPerson(chbrotree *root, char *name)
     nameFindPerson(root->firstchild, name);
     return NULL; */
     //
+
     chbrotree *p, *pre;
+    chbrotree *address[MAX_STRING];
     pre = root;
+    int index = 0;
     while (pre)
     {
         p = pre;
@@ -441,11 +450,28 @@ chbrotree *nameFindPerson(chbrotree *root, char *name)
         {
             if (!strcmp(p->myinfo.name, name))
             {
-                return p;
+                address[index] = p;
             }
             p = p->rightsibling;
         }
         pre = pre->firstchild;
+    }
+    if (index == 1)
+    {
+        return p;
+    }
+    else if (index > 1)
+    {
+        printf("+----------+----------+----------+----------+----------+----------+\n"
+               "|Name      |ID        |Sex       |Age       |Father    |Spouse    |\n"
+               "+----------+----------+----------+----------+----------+----------+\n");
+        while (index--)
+        {
+            printf("|%-10s|%-10d|%-10s|%-10s|%-10s|%-10s|\n", p->myinfo.name, p->myinfo.id, p->myinfo.sex,
+                   p->myinfo.age, p->myinfo.father, p->myinfo.spouse);
+            printf("+----------+----------+----------+----------+----------+----------+\n");
+            index++;
+        }
     }
     return NULL;
 }
@@ -599,6 +625,6 @@ chbrotree *printTreeNode(chbrotree *root)
 // 参数param表示输出父系// 母系 // 兄弟
 chbrotree namePrintTreeNode(chbrotree root, char name, int generation, char *param)
 {
-    linkStack mystack;
+    linkQueue mystack;
     // 用栈暂时保存代数信息
 }
