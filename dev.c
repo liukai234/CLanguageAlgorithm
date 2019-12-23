@@ -63,11 +63,14 @@ int main(int args, char *argv[])
     char relation[MAX_STRING];
     char relationName[MAX_STRING];
 
+    bool fileOpenFlag = false;
+
     printf("Input \"help\" for more.\n");
     while (true)
     {
         PRINT_FONT_GRE
-        if (mychbrotree)
+        // if (mychbrotree)
+        if(fileOpenFlag)
         {
             printf("dev\\%s> ", inputFileName);
         }
@@ -119,7 +122,8 @@ int main(int args, char *argv[])
                         printf("file already open\n");
                         break;
                     }
-                    if (mychbrotree != NULL)
+                    // if (mychbrotree != NULL)
+                    if(fileOpenFlag)
                     {
                         printf("Saving previous data file to %s...\n", outputFileName);
                         save(mychbrotree, outputFileName);
@@ -131,6 +135,7 @@ int main(int args, char *argv[])
                         strcpy(outputFileName, inputFileName);
                         printf("Initialize memory, load data to memory\n");
                         mychbrotree = load(mychbrotree, inputFileName);
+                        fileOpenFlag = true;
                         printf("Load finished\n");
                     }
                     break;
@@ -149,6 +154,7 @@ int main(int args, char *argv[])
             // 没有释放内存
             mychbrotree = NULL;
             *outputFileName = '\0';
+            fileOpenFlag = false;
             break;
         case DEL:
             // del
@@ -168,7 +174,9 @@ int main(int args, char *argv[])
             if (!strcmp(inputFileName, outputFileName))
             {
                 mychbrotree = delAllTree(mychbrotree);
+                fileOpenFlag = false;
             }
+
             break;
         case CLEAR:
             // clear清空正在打开的数据文件
@@ -183,6 +191,8 @@ int main(int args, char *argv[])
                 mychbrotree = delAllTree(mychbrotree);
                 save(mychbrotree, inputFileName);
                 printf("clear successful\n");
+                mychbrotree = load(mychbrotree, inputFileName);
+                printf("Reload finished\n");
             }
             else
             {
@@ -214,7 +224,9 @@ int main(int args, char *argv[])
                 printf("Save finished\n");
             }
             // 没有释放内存
+            mychbrotree = delAllTree(mychbrotree);
             mychbrotree = NULL;
+            fileOpenFlag = false;
             break;
         default:
             printf("'%s' is not an internal command\n", strSel);
@@ -481,13 +493,13 @@ chbrotree *treeInput(chbrotree *root, info myinfo, char *relation, char *relatio
  */
 chbrotree *delAllTree(chbrotree *root)
 {
-    if (root->rightsibling == NULL && root->firstchild == NULL)
+    if (root)
     {
+        delAllTree(root->rightsibling);
+        delAllTree(root->firstchild);
         free(root);
-        return NULL;
     }
-    delAllTree(root->rightsibling);
-    delAllTree(root->firstchild);
+    return NULL;
 }
 
 /**
@@ -553,16 +565,17 @@ chbrotree *printTreeNode(chbrotree *root)
     PRINT_FONT_RED
     printf(">>>\n");
     PRINT_ATTR_REC
-    printf("+----------+----------+----------+----------+----------+\n"
-           "|Name      |ID        |Sex       |Age       |Spouse    |\n"
-           "+----------+----------+----------+----------+----------+\n");
+    printf("+----------+----------+----------+----------+----------+----------+\n"
+           "|Name      |ID        |Sex       |Age       |Father    |Spouse    |\n"
+           "+----------+----------+----------+----------+----------+----------+\n");
     while (pre)
     {
         p = pre;
         while (p)
         {
-            printf("|%-10s|%-10d|%-10s|%-10s|%-10s|\n", p->myinfo.name, p->myinfo.id, p->myinfo.sex, p->myinfo.age, p->myinfo.spouse);
-            printf("+----------+----------+----------+----------+----------+\n");
+            printf("|%-10s|%-10d|%-10s|%-10s|%-10s|%-10s|\n", p->myinfo.name, p->myinfo.id, p->myinfo.sex,
+                   p->myinfo.age, p->myinfo.father, p->myinfo.spouse);
+            printf("+----------+----------+----------+----------+----------+----------+\n");
             rowTotal++;
             p = p->rightsibling;
         }
