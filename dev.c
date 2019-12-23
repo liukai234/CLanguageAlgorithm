@@ -207,6 +207,14 @@ int main(int args, char *argv[])
             break;
         case EXIT:
             exitFlag = true;
+            // 保存文件
+            if (mychbrotree != NULL)
+            {
+                save(mychbrotree, outputFileName);
+                printf("Save finished\n");
+            }
+            // 没有释放内存
+            mychbrotree = NULL;
             break;
         default:
             printf("'%s' is not an internal command\n", strSel);
@@ -310,14 +318,16 @@ chbrotree *load(chbrotree *root, char *fileName)
     {
         PRINT_FONT_RED
         fprintf(stderr, "%s\n", strerror(errno));
+        PRINT_ATTR_REC
         return NULL;
     }
     chbrotree *p, *pre;
     p = (chbrotree *)malloc(sizeof(chbrotree));
     while (fread(p, sizeof(struct chbrotree0), 1, input))
     {
-        root = treeInput(root, p->myinfo, "父亲", p->myinfo.father);
+        root = treeInput(root, p->myinfo, "father", p->myinfo.father);
     }
+    fclose(input);
     return root;
 }
 
@@ -385,18 +395,37 @@ chbrotree *idFindPerson(chbrotree *root, int id)
  * @ver: 1.0 2019/12/20
  * @lastchange: LiuKai
  */
+// set flag
 chbrotree *nameFindPerson(chbrotree *root, char *name)
 {
-    if (root == NULL)
+    /* if (root->rightsibling == NULL && root->firstchild == NULL)
     {
-        return NULL;
-    }
-    if (!strcmp(root->myinfo.name, name))
+        return root;
+    } */
+    /* if (!strcmp(root->myinfo.name, name))
     {
         return root;
     }
-    nameFindPerson(root->firstchild, name);
     nameFindPerson(root->rightsibling, name);
+    nameFindPerson(root->firstchild, name);
+    return NULL; */
+    //
+    chbrotree *p, *pre;
+    pre = root;
+    while (pre)
+    {
+        p = pre;
+        while (p)
+        {
+            if (!strcmp(root->myinfo.name, name))
+            {
+                return p;
+            }
+            p = p->rightsibling;
+        }
+        pre = pre->firstchild;
+    }
+    return NULL;
 }
 
 /**
@@ -423,7 +452,7 @@ chbrotree *treeInput(chbrotree *root, info myinfo, char *relation, char *relatio
     if (pre == NULL)
     {
         PRINT_FONT_RED
-        printf("%s%s is not exist and modification cannot be saved\n");
+        printf("%s %s is not exist and modification cannot be saved\n", relation, relationName);
         PRINT_ATTR_REC
         return root;
     }
@@ -532,7 +561,7 @@ chbrotree *printTreeNode(chbrotree *root)
         p = pre;
         while (p)
         {
-            printf("|%-10s|%-10d|%-10s|%-10s|%-10s|\n", root->myinfo.name, root->myinfo.id, root->myinfo.sex, root->myinfo.age, root->myinfo.spouse);
+            printf("|%-10s|%-10d|%-10s|%-10s|%-10s|\n", p->myinfo.name, p->myinfo.id, p->myinfo.sex, p->myinfo.age, p->myinfo.spouse);
             printf("+----------+----------+----------+----------+----------+\n");
             rowTotal++;
             p = p->rightsibling;
