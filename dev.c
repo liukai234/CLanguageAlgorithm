@@ -70,7 +70,7 @@ int main(int args, char *argv[])
     {
         PRINT_FONT_GRE
         // if (mychbrotree)
-        if(fileOpenFlag)
+        if (fileOpenFlag)
         {
             printf("dev\\%s> ", inputFileName);
         }
@@ -123,7 +123,7 @@ int main(int args, char *argv[])
                         break;
                     }
                     // if (mychbrotree != NULL)
-                    if(fileOpenFlag)
+                    if (fileOpenFlag)
                     {
                         printf("Saving previous data file to %s...\n", outputFileName);
                         save(mychbrotree, outputFileName);
@@ -149,12 +149,21 @@ int main(int args, char *argv[])
             break;
         case CLOSE:
             // close
-            save(mychbrotree, outputFileName);
-            printf("Save finished\n");
-            // 没有释放内存
-            mychbrotree = NULL;
-            *outputFileName = '\0';
-            fileOpenFlag = false;
+            if (fileOpenFlag)
+            {
+                save(mychbrotree, outputFileName);
+                printf("Save finished\n");
+                // 没有释放内存
+                mychbrotree = NULL;
+                *outputFileName = '\0';
+                fileOpenFlag = false;
+            }
+            else
+            {
+                PRINT_FONT_RED
+                printf("No file is opening\n");
+                PRINT_ATTR_REC
+            }
             break;
         case DEL:
             // del
@@ -232,7 +241,7 @@ int main(int args, char *argv[])
             printf("'%s' is not an internal command\n", strSel);
             break;
         }
-        printf("Execution completed\n");
+        // printf("Execution completed\n");
         if (exitFlag)
         {
             break;
@@ -256,6 +265,7 @@ void menuPrint()
            "ls               format: ls\n"
            "mk               format: mk [*.dat]\n"
            "open             format: open [*.dat]\n"
+           "close and save   format: close"
            "load             format: laod [*.dat]\n"
            "save             format: save [*.dat]\n"
            "idFindPerson     format: idFindPerson [id]\n"
