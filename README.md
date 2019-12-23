@@ -1,7 +1,10 @@
 # Team private project
 ---
 # update
-
+# 2019/12/23
+1. 用fileOpenFlag == TRUE代替mychbrotree != NULL来判断文件是否打开
+2. 增加文件未打开时close的提示语
+3. 增加了内存释放机制 delAllTree() 放弃使用时清空整个树的内存
 # 2019/12/22 
 1. 160行treeInput无法输入到myinfo结构体中的bug无法复现
 2. save中的fwrite无法写入已修复::由于output为分配文件指针
