@@ -3,7 +3,6 @@
  * @file: myhead.h
  * @author: LiuKai
  * @ver: 2.0 2019/12/21
- * @lastaurhot:LiuKai
  **/
 #ifndef __MYHEAD_H__
 #define __MYHEAD_H__
@@ -50,7 +49,6 @@ char menuSel[MENU_SEL][MAX_FILE_NAME] = {"help",
  * @description: printfColor
  * @author: liukai
  * @ver:1.0 2019/12/19
- * @lastchange: liukai
  */
 /*设置输出前景色*/
 #define PRINT_FONT_BLA printf("\033[30m"); //黑色
@@ -86,7 +84,6 @@ char menuSel[MENU_SEL][MAX_FILE_NAME] = {"help",
  * @description: 树结构体
  * @author：Liukai
  * @ver:1.0 2019/12/20
- * @lastchange:liukai
  */
 typedef struct info0
 {
@@ -102,7 +99,8 @@ typedef struct info0
 typedef struct chbrotree0
 {
     info myinfo;
-    struct chbrotree0 *firstchild, *rightsibling;
+    struct chbrotree0 *firstchild; //第一个后代
+    struct chbrotree0 *rightsibling; //自己的兄弟
 } chbrotree;
 
 // 借助一个栈来输出指定前几代人 // 后几代人 // 兄弟节点
