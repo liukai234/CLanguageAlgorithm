@@ -475,11 +475,27 @@ chbrotree *nameFindPerson(chbrotree *root, char *name)
 }
 
 /**
+ * @description: addChildToFather
+ * @author: LiuXiaoxia
+ * @param: chbrotree *Father, chbrotree *Child
+ * @return: void
+ * @ver: 1.0 2019/12/24
+ */
+void addChildToFather(chbrotree *Father, chbrotree *Child)
+{
+    strcpy(Child->myinfo.father, Father->myinfo.name);
+    Child->myfather = Father;
+    chbrotree *next = Father->firstchild;
+    Father->firstchild = Child;
+    Child->rightsibling = next;
+}
+
+/**
  * @description: treeInput
- * @author: LiuKai
+ * @author: LiuXiaoxia
  * @param: chbrotree *root, info myinfo, char *relation, char *relationName
  * @return: chbrotree *root
- * @ver: 2.0 2019/12/21
+ * @ver: 3.0 2019/12/24
  */
 chbrotree *treeInput(chbrotree *root, info myinfo, char *relation, char *relationName)
 {
@@ -503,23 +519,45 @@ chbrotree *treeInput(chbrotree *root, info myinfo, char *relation, char *relatio
     }
     if (!strcmp(relation, "father") || !strcmp(relation, "mother"))
     {
-        strcpy(node->myinfo.father, relationName);
-        node->myfather = pre;
-        chbrotree *next = pre->firstchild;
-        pre->firstchild = node;
-        node->rightsibling = next;
+        addChildToFather(pre, node);
     }
-    // !!!在这里讨论其他的亲属关系
     else if ((relation, "uncle") || (relation, "aunt"))
     {
-        chbrotree *gfather = pre->myfather;
+        chbrotree *newfather = pre->myfather;
+        generationPrintTreeNode(newfather->firstchild, 1);
+        //根据输出的信息找到myinfo的父亲的ID并输入
+        int myinfoFatherID;
+        scanf("%d", &myinfoFatherID);
+        chbrotree *p = idFindPerson(newfather->firstchild, myinfoFatherID);
+        addChildToFather(p, node);
+    }
+    else if ((relation, "grandfather") || (relation, "grandmother"))
+    {
+        generationPrintTreeNode(pre->firstchild, 1);
+        //根据输出的信息找到myinfo的父亲的ID并输入
+        int myinfoFatherID;
+        scanf("%d", &myinfoFatherID);
+        chbrotree *p = idFindPerson(pre->firstchild, myinfoFatherID);
+        addChildToFather(p, node);
+    }
+    else if ((relation, "son") || (relation, "daughter"))
+    {
+        chbrotree *newfather = pre->myfather->myfather;
+        addChildToFather(newfather, node);
+        addChildToFather(node, pre);
+    }
+    else if ((relation, "grandson") || (relation, "granddaughter"))
+    {
+        chbrotree *newfather = pre->myfather->myfather->myfather;
+        addChildToFather(newfather, node);
+        addChildToFather(node, pre->myfather);
     }
     return root;
 }
 
 /**
  * @description: 释放除头结点外的所有节点的内存
- * @autor: liuxiaoxia
+ * @autor: liuXiaoxia
  * @param {type}
  * @return: head;
  * @ver: 1.0 2019/12/23
@@ -553,13 +591,13 @@ chbrotree *mallocTreeNode(chbrotree *node, info myinfo)
 }
 
 /**
- * @description: chbrotree *printTreeNode
+ * @description: printTreeNode
  * @author: LiuKai
  * @param: chbrotree *root
  * @return: void
  * @ver: 1.0 2019/12/22
  */
-chbrotree *printTreeNode(chbrotree *root)
+void printTreeNode(chbrotree *root)
 {
     int rowTotal = 0;
     /*     if (root == NULL)
@@ -616,9 +654,48 @@ chbrotree *printTreeNode(chbrotree *root)
     printf("%d rows in table <%.2f sec>\n", rowTotal, timing);
 }
 
+/**
+ * @description: generationPrintTreeNode
+ * @author: LiuXiaoxia
+ * @param: chbrotree *root, int generation
+ * @return: void
+ * @ver: 1.0 2019/12/24
+ */
 // 参数param表示输出父系// 母系 // 兄弟
-chbrotree namePrintTreeNode(chbrotree root, char name, int generation, char *param)
+void generationPrintTreeNode(chbrotree *root, int generation)
 {
+<<<<<<< HEAD
 
     // 用栈暂时保存代数信息
+=======
+    int rowTotal = 0;
+    chbrotree *p, *pre;
+    pre = root;
+    clock_t start, end;
+    float timing = 0.0;
+    start = clock();
+    PRINT_FONT_RED
+    printf(">>>\n");
+    PRINT_ATTR_REC
+    printf("+----------+----------+----------+----------+----------+----------+\n"
+           "|Name      |ID        |Sex       |Age       |Father    |Spouse    |\n"
+           "+----------+----------+----------+----------+----------+----------+\n");
+    while (generation)
+    {
+        p = pre;
+        while (p)
+        {
+            printf("|%-10s|%-10d|%-10s|%-10s|%-10s|%-10s|\n", p->myinfo.name, p->myinfo.id, p->myinfo.sex,
+                   p->myinfo.age, p->myinfo.father, p->myinfo.spouse);
+            printf("+----------+----------+----------+----------+----------+----------+\n");
+            rowTotal++;
+            p = p->rightsibling;
+        }
+        pre = pre->firstchild;
+        generation --;
+    }
+    end = clock();
+    timing = (float)(end - start) / CLOCKS_PER_SEC;
+    printf("%d rows in table <%.2f sec>\n", rowTotal, timing);
+>>>>>>> fd30c266af5a8b6feafcfe8d8ec8191dc1ca2e8a
 }
