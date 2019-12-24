@@ -472,6 +472,11 @@ chbrotree *nameFindPerson(chbrotree *root, char *name)
             printf("+----------+----------+----------+----------+----------+----------+\n");
             index++;
         }
+        int myIdFind;
+        scanf("%d", &myIdFind);
+        
+        p = idFindPerson(root, myIdFind);
+        return p;
     }
     return NULL;
 }
