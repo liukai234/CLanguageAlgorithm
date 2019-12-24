@@ -625,6 +625,6 @@ chbrotree *printTreeNode(chbrotree *root)
 // 参数param表示输出父系// 母系 // 兄弟
 chbrotree namePrintTreeNode(chbrotree root, char name, int generation, char *param)
 {
-    linkQueue mystack;
+    linkStack mystack;
     // 用栈暂时保存代数信息
 }
