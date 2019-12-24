@@ -16,7 +16,7 @@
 
 #define MAX_FILE_NAME 100 // 文件名的长度
 #define MAX_STRING 100
-#define MENU_SEL 13       // 菜单长度宏
+#define MENU_SEL 12       // 菜单长度宏
 #define MAX_FILE_NUM 1000 // 最大文件数量
 
 #define MENU_PRINT 0
@@ -31,7 +31,6 @@
 #define PRINT_TREE_NODE 9
 #define EXIT 10
 #define CLEAR 11
-#define CHANGE 12
 
 char menuSel[MENU_SEL][MAX_FILE_NAME] = {"help",
                                          "ls",
@@ -44,8 +43,7 @@ char menuSel[MENU_SEL][MAX_FILE_NAME] = {"help",
                                          "treeInput",
                                          "printTreeNode",
                                          "exit",
-                                         "clear", 
-                                         "change"}; // 菜单索引
+                                         "clear"}; // 菜单索引
 
 /**
  * @description: printfColor
