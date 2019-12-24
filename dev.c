@@ -661,7 +661,6 @@ void printTreeNode(chbrotree *root)
  * @return: void
  * @ver: 1.0 2019/12/24
  */
-// 参数param表示输出父系// 母系 // 兄弟
 void generationPrintTreeNode(chbrotree *root, int generation)
 {
     int rowTotal = 0;
