@@ -2,7 +2,7 @@
  * @description: 头文件
  * @file: myhead.h
  * @author: LiuKai
- * @ver: 2.0 2019/12/21
+ * @ver: 3.0 2019/12/21
  **/
 #ifndef __MYHEAD_H__
 #define __MYHEAD_H__
@@ -40,8 +40,8 @@ char menuSel[MENU_SEL][MAX_FILE_NAME] = {"help",
                                          "del",
                                          "idFindPerson",
                                          "nameFindPerson",
-                                         "treeInput",
-                                         "printTreeNode",
+                                         "input",
+                                         "printTree",
                                          "exit",
                                          "clear",
                                          "modify"}; // 菜单索引
