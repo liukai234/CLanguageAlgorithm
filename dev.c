@@ -456,13 +456,19 @@ chbrotree *nameFindPerson(chbrotree *root, char *name)
         printf("+----------+----------+----------+----------+----------+----------+\n"
                "|Name      |ID        |Sex       |Age       |Father    |Spouse    |\n"
                "+----------+----------+----------+----------+----------+----------+\n");
-        while (index--)
+        for (int i = 0; i < index; i++)
         {
             printf("|%-10s|%-10d|%-10s|%-10s|%-10s|%-10s|\n", p->myinfo.name, p->myinfo.id, p->myinfo.sex,
                    p->myinfo.age, p->myinfo.father, p->myinfo.spouse);
             printf("+----------+----------+----------+----------+----------+----------+\n");
             index++;
         }
+        int myIdFind;
+        scanf("%d", &myIdFind);
+        
+        p = idFindPerson(root, myIdFind);
+        return p;
+
     }
     return NULL;
 }
