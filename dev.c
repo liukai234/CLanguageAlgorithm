@@ -610,7 +610,7 @@ chbrotree *mallocTreeNode(chbrotree *node, info myinfo)
     node = (chbrotree *)malloc(sizeof(chbrotree));
     node->myinfo = myinfo;
     node->firstchild = node->rightsibling = NULL;
-    ` node->myinfo.id = ID;
+    node->myinfo.id = ID;
     ID++;
     return node;
 }
