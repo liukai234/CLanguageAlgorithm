@@ -478,7 +478,15 @@ chbrotree *nameFindPerson(chbrotree *root, char *name)
     }
     return NULL;
 }
-void modify(chbrotree*root)
+
+/**
+ * @description: modify
+ * @author: LiuXiaofang
+ * @param: chbrotree *root
+ * @return: void
+ * @ver: 1.0 2019/12/24
+ */
+void modify (chbrotree *root)
 {
     char name[20];
     char newname[20];
