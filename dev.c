@@ -213,6 +213,10 @@ int main(int args, char *argv[])
             scanf("%s", name);
             nameFindPerson(mychbrotree, name);
             break;
+        case CHANGE:
+            scanf("%s",name);
+            change(mychbrotree, name);
+            break;
         case INPUT:
             // input
             scanf("%s%s", relation, relationName);
@@ -465,6 +469,9 @@ chbrotree *nameFindPerson(chbrotree *root, char *name)
         }
     }
     return NULL;
+}
+void change(chbrotree*root,char name[]){
+    
 }
 
 /**
