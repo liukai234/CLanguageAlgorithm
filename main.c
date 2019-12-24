@@ -61,6 +61,8 @@ int main(int args, char *argv[])
     char relation[MAX_STRING];
     char relationName[MAX_STRING];
     int IdFind;
+    int generation;
+    char direction[MAX_STRING];
     bool fileOpenFlag = false;
 
     printf("Input \"help\" for more.\n");
@@ -282,6 +284,19 @@ int main(int args, char *argv[])
                 PRINT_ATTR_REC
             }
             break;
+        case GENERAT:
+            if (fileOpenFlag)
+            {
+                scanf("%s%s%d", name, direction, &generation);
+                printCondition(mychbrotree, name, direction, generation);
+            }
+            else
+            {
+                PRINT_FONT_RED
+                printf("Not save, retry\n");
+                PRINT_ATTR_REC
+            }
+            break;
         case EXIT:
             exitFlag = true;
             // 保存文件
@@ -339,6 +354,7 @@ void menuPrint()
            "modify           format: modify [searchName]\n"
            "treeInput        format: input [relation][relationName][name][sex][birth][spouse]\n"
            "printTreeNode    format: printTree\n"
+           "printGenerat     fotmat: printGenert [name][direction][generat]\n"
            "exit             format: exit\n");
 }
 
@@ -571,17 +587,18 @@ chbrotree *modify(chbrotree *root, char *name)
  * @return: void
  * @ver: 1.0 2019/12/24
  */
-void addChildToFather(chbrotree *Father, chbrotree *Child)
+chbrotree *addChildToFather(chbrotree *Father, chbrotree *Child)
 {
     strcpy(Child->myinfo.father, Father->myinfo.name);
     Child->myfather = Father;
     chbrotree *next = Father->firstchild;
     Father->firstchild = Child;
     Child->rightsibling = next;
+    return Father;
 }
 
 /**
- * @description: treeInput
+ * @description: treeInput 输入节点与该节点father or mather or others
  * @author: LiuXiaoxia
  * @param: chbrotree *root, info myinfo, char *relation, char *relationName
  * @return: chbrotree *root
@@ -598,7 +615,7 @@ chbrotree *treeInput(chbrotree *root, info myinfo, char *relation, char *relatio
         root = node;
         return root;
     }
-    // 输入节点与该节点的父亲 // 母亲
+
     chbrotree *pre = nameFindPerson(root, relationName);
     if (pre == NULL)
     {
@@ -611,7 +628,7 @@ chbrotree *treeInput(chbrotree *root, info myinfo, char *relation, char *relatio
     {
         addChildToFather(pre, node);
     }
-    else if ((relation, "uncle") || (relation, "aunt"))
+    else if (!strcmp(relation, "uncle") || !strcmp(relation, "aunt"))
     {
         chbrotree *newfather = pre->myfather;
         generationPrintTreeNode(newfather->firstchild, 1);
@@ -619,28 +636,28 @@ chbrotree *treeInput(chbrotree *root, info myinfo, char *relation, char *relatio
         int myinfoFatherID;
         scanf("%d", &myinfoFatherID);
         chbrotree *p = idFindPerson(newfather->firstchild, myinfoFatherID);
-        addChildToFather(p, node);
+        p = addChildToFather(p, node);
     }
-    else if ((relation, "grandfather") || (relation, "grandmother"))
+    else if (!strcmp(relation, "grandfather") || !strcmp(relation, "grandmother"))
     {
         generationPrintTreeNode(pre->firstchild, 1);
         //根据输出的信息找到myinfo的父亲的ID并输入
         int myinfoFatherID;
         scanf("%d", &myinfoFatherID);
         chbrotree *p = idFindPerson(pre->firstchild, myinfoFatherID);
-        addChildToFather(p, node);
+        p = addChildToFather(p, node);
     }
-    else if ((relation, "son") || (relation, "daughter"))
+    else if (!strcmp(relation, "son") || !strcmp(relation, "daughter"))
     {
         chbrotree *newfather = pre->myfather->myfather;
-        addChildToFather(newfather, node);
-        addChildToFather(node, pre);
+        newfather = addChildToFather(newfather, node);
+        node = addChildToFather(node, pre);
     }
-    else if ((relation, "grandson") || (relation, "granddaughter"))
+    else if (!strcmp(relation, "grandson") || !strcmp(relation, "granddaughter"))
     {
         chbrotree *newfather = pre->myfather->myfather->myfather;
-        addChildToFather(newfather, node);
-        addChildToFather(node, pre->myfather);
+        newfather = addChildToFather(newfather, node);
+        node = addChildToFather(node, pre->myfather);
     }
     return root;
 }
@@ -782,4 +799,46 @@ void generationPrintTreeNode(chbrotree *root, int generation)
     end = clock();
     timing = (float)(end - start) / CLOCKS_PER_SEC;
     printf("%d rows in table <%.2f sec>\n", rowTotal, timing);
+}
+
+// add printcondition
+/**
+ * @description: printCondition
+ * @author: LiuXiaoxia
+ * @param: chbrotree *root, int generation
+ * @return: void
+ * @ver: 1.0 2019/12/24
+ */
+void printCondition(chbrotree *root, char *name, char *direction, int generation)
+{
+    int i = 0;
+    chbrotree *pre = nameFindPerson(root, name);
+    chbrotree *ptemp = NULL;
+    if (pre == NULL)
+    {
+        PRINT_FONT_RED
+        printf("%s is not exist and modification cannot be saved\n", name);
+        PRINT_ATTR_REC
+    }
+
+    for (i = 1; i <= generation; i++)
+    {
+        chbrotree *ptemp = pre;
+        if (!strcmp("after", direction))
+        {
+            pre = pre->firstchild;
+        }
+        else if (!strcmp("before", direction))
+        {
+            pre = pre->myfather;
+        }
+        if (pre == NULL)
+        {
+            PRINT_FONT_RED
+            printf("No more data, only %d generation.\n", i);
+            PRINT_ATTR_REC
+            break;
+        }
+    }
+    generationPrintTreeNode(ptemp, i);
 }

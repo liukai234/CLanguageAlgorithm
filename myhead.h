@@ -16,7 +16,7 @@
 
 #define MAX_FILE_NAME 100 // 文件名的长度
 #define MAX_STRING 100
-#define MENU_SEL 13       // 菜单长度宏
+#define MENU_SEL 14       // 菜单长度宏
 #define MAX_FILE_NUM 1000 // 最大文件数量
 
 #define MENU_PRINT 0
@@ -32,6 +32,7 @@
 #define EXIT 10
 #define CLEAR 11
 #define MODIFY 12
+#define GENERAT 13
 char menuSel[MENU_SEL][MAX_FILE_NAME] = {"help",
                                          "ls",
                                          "mk",
@@ -44,7 +45,8 @@ char menuSel[MENU_SEL][MAX_FILE_NAME] = {"help",
                                          "printTree",
                                          "exit",
                                          "clear",
-                                         "modify"}; // 菜单索引
+                                         "modify",
+                                         "printGenerat"}; // 菜单索引
 
 /**
  * @description: printfColor
@@ -101,7 +103,7 @@ typedef struct chbrotree0
 {
     info myinfo;
     struct chbrotree0 *myfather;
-    struct chbrotree0 *firstchild; //第一个后代
+    struct chbrotree0 *firstchild;   //第一个后代
     struct chbrotree0 *rightsibling; //自己的兄弟
 } chbrotree;
 
@@ -124,7 +126,8 @@ chbrotree *treeInput(chbrotree *root, info myinfo, char *relation, char *relatio
 chbrotree *mallocTreeNode(chbrotree *node, info myinfo);
 void printTreeNode(chbrotree *root);
 void generationPrintTreeNode(chbrotree *root, int generation);
-void addChildToFather(chbrotree *Father, chbrotree *Child);
+chbrotree *addChildToFather(chbrotree *Father, chbrotree *Child);
 chbrotree *delAllTree(chbrotree *root);
-chbrotree *modify(chbrotree*root, char *name);
+chbrotree *modify(chbrotree *root, char *name);
+void printCondition(chbrotree *root, char *name, char *direction, int generation);
 #endif
