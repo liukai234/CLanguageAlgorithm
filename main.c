@@ -692,6 +692,7 @@ chbrotree *mallocTreeNode(chbrotree *node, info myinfo)
     node = (chbrotree *)malloc(sizeof(chbrotree));
     node->myinfo = myinfo;
     node->firstchild = node->rightsibling = NULL;
+    node->myfather = NULL;
     node->myinfo.id = ID;
     ID++;
     return node;
@@ -812,18 +813,25 @@ void generationPrintTreeNode(chbrotree *root, int generation)
 void printCondition(chbrotree *root, char *name, char *direction, int generation)
 {
     int i = 0;
+    generation ++;
     chbrotree *pre = nameFindPerson(root, name);
-    chbrotree *ptemp = NULL;
     if (pre == NULL)
     {
         PRINT_FONT_RED
         printf("%s is not exist and modification cannot be saved\n", name);
         PRINT_ATTR_REC
     }
-
-    for (i = 1; i <= generation; i++)
+    PRINT_FONT_RED
+    printf(">>>\n");
+    PRINT_ATTR_REC
+    printf("+----------+----------+----------+----------+----------+----------+\n"
+           "|Name      |ID        |Sex       |Birth     |Father    |Spouse    |\n"
+           "+----------+----------+----------+----------+----------+----------+\n");
+    while ((generation--) && pre != NULL)
     {
-        chbrotree *ptemp = pre;
+        printf("|%-10s|%-10d|%-10s|%-10s|%-10s|%-10s|\n", pre->myinfo.name, pre->myinfo.id, pre->myinfo.sex,
+               pre->myinfo.birth, pre->myinfo.father, pre->myinfo.spouse);
+        printf("+----------+----------+----------+----------+----------+----------+\n");
         if (!strcmp("after", direction))
         {
             pre = pre->firstchild;
@@ -832,13 +840,5 @@ void printCondition(chbrotree *root, char *name, char *direction, int generation
         {
             pre = pre->myfather;
         }
-        if (pre == NULL)
-        {
-            PRINT_FONT_RED
-            printf("No more data, only %d generation.\n", i);
-            PRINT_ATTR_REC
-            break;
-        }
     }
-    generationPrintTreeNode(ptemp, i);
 }
