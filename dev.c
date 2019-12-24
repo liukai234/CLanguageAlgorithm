@@ -60,7 +60,7 @@ int main(int args, char *argv[])
     info myinfo;
     char relation[MAX_STRING];
     char relationName[MAX_STRING];
-
+    int IdFind;
     bool fileOpenFlag = false;
 
     printf("Input \"help\" for more.\n");
@@ -207,7 +207,8 @@ int main(int args, char *argv[])
             }
             break;
         case ID_FIND_PERSON:
-            // do idFindPerson
+            scanf("%d", &IdFind);
+            idFindPerson(mychbrotree, IdFind);
             break;
         case NAME_FIND_PERSON:
             scanf("%s", name);
@@ -442,6 +443,7 @@ chbrotree *nameFindPerson(chbrotree *root, char *name)
             if (!strcmp(p->myinfo.name, name))
             {
                 address[index] = p;
+                index++;
             }
             p = p->rightsibling;
         }
@@ -449,26 +451,25 @@ chbrotree *nameFindPerson(chbrotree *root, char *name)
     }
     if (index == 1)
     {
-        return p;
+        return address[0];
     }
     else if (index > 1)
     {
+        // 调用条件输出
         printf("+----------+----------+----------+----------+----------+----------+\n"
                "|Name      |ID        |Sex       |Age       |Father    |Spouse    |\n"
                "+----------+----------+----------+----------+----------+----------+\n");
         for (int i = 0; i < index; i++)
         {
-            printf("|%-10s|%-10d|%-10s|%-10s|%-10s|%-10s|\n", p->myinfo.name, p->myinfo.id, p->myinfo.sex,
-                   p->myinfo.age, p->myinfo.father, p->myinfo.spouse);
+            printf("|%-10s|%-10d|%-10s|%-10s|%-10s|%-10s|\n", address[index]->myinfo.name, address[index]->myinfo.id, address[index]->myinfo.sex,
+                   address[index]->myinfo.age, address[index]->myinfo.father, address[index]->myinfo.spouse);
             printf("+----------+----------+----------+----------+----------+----------+\n");
-            index++;
         }
+        printf("Input id to find:\n");
         int myIdFind;
         scanf("%d", &myIdFind);
-        
         p = idFindPerson(root, myIdFind);
         return p;
-
     }
     return NULL;
 }
@@ -543,7 +544,6 @@ chbrotree *delAllTree(chbrotree *root)
  */
 chbrotree *mallocTreeNode(chbrotree *node, info myinfo)
 {
-
     node = (chbrotree *)malloc(sizeof(chbrotree));
     node->myinfo = myinfo;
     node->firstchild = node->rightsibling = NULL;
@@ -619,6 +619,6 @@ chbrotree *printTreeNode(chbrotree *root)
 // 参数param表示输出父系// 母系 // 兄弟
 chbrotree namePrintTreeNode(chbrotree root, char name, int generation, char *param)
 {
-    linkQueue mystack;
+
     // 用栈暂时保存代数信息
 }
