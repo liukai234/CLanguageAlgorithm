@@ -16,7 +16,7 @@
 
 #define MAX_FILE_NAME 100 // 文件名的长度
 #define MAX_STRING 100
-#define MENU_SEL 12       // 菜单长度宏
+#define MENU_SEL 13       // 菜单长度宏
 #define MAX_FILE_NUM 1000 // 最大文件数量
 
 #define MENU_PRINT 0
@@ -31,7 +31,7 @@
 #define PRINT_TREE_NODE 9
 #define EXIT 10
 #define CLEAR 11
-
+#define MODIFY 12
 char menuSel[MENU_SEL][MAX_FILE_NAME] = {"help",
                                          "ls",
                                          "mk",
@@ -43,7 +43,8 @@ char menuSel[MENU_SEL][MAX_FILE_NAME] = {"help",
                                          "treeInput",
                                          "printTreeNode",
                                          "exit",
-                                         "clear"}; // 菜单索引
+                                         "clear",
+                                         "modify"}; // 菜单索引
 
 /**
  * @description: printfColor
@@ -91,7 +92,7 @@ typedef struct info0
     char father[MAX_STRING];
     int id;
     char sex[MAX_STRING];
-    char age[MAX_STRING];
+    char birth[MAX_STRING];
     char spouse[MAX_STRING];
     // ！！！应该增加一项备注char note[MAX_STRING];
 } info;
@@ -125,4 +126,5 @@ void printTreeNode(chbrotree *root);
 void generationPrintTreeNode(chbrotree *root, int generation);
 void addChildToFather(chbrotree *Father, chbrotree *Child);
 chbrotree *delAllTree(chbrotree *root);
+chbrotree *modify(chbrotree*root, char *name);
 #endif

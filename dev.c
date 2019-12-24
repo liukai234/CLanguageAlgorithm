@@ -215,13 +215,13 @@ int main(int args, char *argv[])
             nameFindPerson(mychbrotree, name);
             break;
         case MODIFY:
-            scanf("%s",name);
-            modify(mychbrotree,name);
+            scanf("%s", name);
+            mychbrotree = modify(mychbrotree, name);
             break;
         case INPUT:
             // input
             scanf("%s%s", relation, relationName);
-            scanf("%s%s%s%s", myinfo.name, myinfo.sex, myinfo.age, myinfo.spouse);
+            scanf("%s%s%s%s", myinfo.name, myinfo.sex, myinfo.birth, myinfo.spouse);
             mychbrotree = treeInput(mychbrotree, myinfo, relation, relationName);
             break;
         case PRINT_TREE_NODE:
@@ -273,7 +273,7 @@ void menuPrint()
            "idFindPerson     format: idFindPerson [id]\n"
            "nameFindPerson   format: nameFindPerson [name]\n"
            "modify           format: modify\n"
-           "treeInput        format: input [relation][relationName][name][id][sex][age][spouse]"
+           "treeInput        format: input [relation][relationName][name][id][sex][birth][spouse]"
            "printTreeNode    format: printTreeNode\n"
            "exit             format: exit\n");
 }
@@ -467,7 +467,7 @@ chbrotree *nameFindPerson(chbrotree *root, char *name)
         for (int i = 0; i < index; i++)
         {
             printf("|%-10s|%-10d|%-10s|%-10s|%-10s|%-10s|\n", address[index]->myinfo.name, address[index]->myinfo.id, address[index]->myinfo.sex,
-                   address[index]->myinfo.age, address[index]->myinfo.father, address[index]->myinfo.spouse);
+                   address[index]->myinfo.birth, address[index]->myinfo.father, address[index]->myinfo.spouse);
             printf("+----------+----------+----------+----------+----------+----------+\n");
         }
         printf("Input id to find:\n");
@@ -478,26 +478,24 @@ chbrotree *nameFindPerson(chbrotree *root, char *name)
     }
     return NULL;
 }
-void modify(chbrotree*root)
+
+chbrotree *modify(chbrotree *root, char *name)
 {
-    char name[20];
-    char newname[20];
-    chbrotree*newroot;
-    printf("please enter the name to modify:\n");
-    scanf("%s",name);
-    newroot=nameFindPerson(root, name);
-    if(newroot==NULL)
+    info myinfo;
+    printf("enter the name to modify:\n");
+    chbrotree *p;
+    p = nameFindPerson(root, name);
+    if (p == NULL)
     {
         printf("ERROR!This person doesn't exist in the family tree!");
-        return ;
+        return NULL;
     }
     else
     {
-        printf("Enter the new name:\n");
-        scanf("%s",newname);
-        if(strcmp(name,newname)!=0)
-        strcpy(name,newname);
-        printf("Modification successful!");
+        printf("Enter the new info:\n");
+        scanf("%s%s%s%s%s", p->myinfo.name, p->myinfo.sex,
+              p->myinfo.birth, p->myinfo.father, p->myinfo.spouse);
+        return root;
     }
 }
 
@@ -612,7 +610,7 @@ chbrotree *mallocTreeNode(chbrotree *node, info myinfo)
     node = (chbrotree *)malloc(sizeof(chbrotree));
     node->myinfo = myinfo;
     node->firstchild = node->rightsibling = NULL;
-    node->myinfo.id = ID;
+    ` node->myinfo.id = ID;
     ID++;
     return node;
 }
@@ -641,13 +639,13 @@ void printTreeNode(chbrotree *root)
     // 设计输出表格
     /*
     +---------+----------+--------+-------+----------+
-    |Name     |ID        |sex     |age    |Spouse    |          
+    |Name     |ID        |sex     |birth    |Spouse    |          
     +---------+----------+--------+-------+----------+
     |1        |2         |3       |4      |5         |
     +---------+----------+--------+-------+----------+
     1 rows in table
     */
-    /* printf("%s %d %s %s %s\n", root->myinfo.name, root->myinfo.id, root->myinfo.sex, root->myinfo.age, root->myinfo.spouse);
+    /* printf("%s %d %s %s %s\n", root->myinfo.name, root->myinfo.id, root->myinfo.sex, root->myinfo.birth, root->myinfo.spouse);
     printTreeNode(root->rightsibling);
     // PRINT_FONT_RED
     printTreeNode(root->firstchild); */
@@ -669,7 +667,7 @@ void printTreeNode(chbrotree *root)
         while (p)
         {
             printf("|%-10s|%-10d|%-10s|%-10s|%-10s|%-10s|\n", p->myinfo.name, p->myinfo.id, p->myinfo.sex,
-                   p->myinfo.age, p->myinfo.father, p->myinfo.spouse);
+                   p->myinfo.birth, p->myinfo.father, p->myinfo.spouse);
             printf("+----------+----------+----------+----------+----------+----------+\n");
             rowTotal++;
             p = p->rightsibling;
@@ -708,13 +706,13 @@ void generationPrintTreeNode(chbrotree *root, int generation)
         while (p)
         {
             printf("|%-10s|%-10d|%-10s|%-10s|%-10s|%-10s|\n", p->myinfo.name, p->myinfo.id, p->myinfo.sex,
-                   p->myinfo.age, p->myinfo.father, p->myinfo.spouse);
+                   p->myinfo.birth, p->myinfo.father, p->myinfo.spouse);
             printf("+----------+----------+----------+----------+----------+----------+\n");
             rowTotal++;
             p = p->rightsibling;
         }
         pre = pre->firstchild;
-        generation --;
+        generation--;
     }
     end = clock();
     timing = (float)(end - start) / CLOCKS_PER_SEC;
