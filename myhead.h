@@ -121,7 +121,8 @@ chbrotree *idFindPerson(chbrotree *root, int id);
 chbrotree *nameFindPerson(chbrotree *root, char *name);
 chbrotree *treeInput(chbrotree *root, info myinfo, char *relation, char *relationName);
 chbrotree *mallocTreeNode(chbrotree *node, info myinfo);
-chbrotree *printTreeNode(chbrotree *root);
-chbrotree namePrintTreeNode(chbrotree root, char name, int generation, char *param);
+void printTreeNode(chbrotree *root);
+void generationPrintTreeNode(chbrotree *root, int generation);
+void addChildToFather(chbrotree *Father, chbrotree *Child);
 chbrotree *delAllTree(chbrotree *root);
 #endif
