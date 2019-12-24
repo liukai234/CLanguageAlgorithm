@@ -661,13 +661,8 @@ void printTreeNode(chbrotree *root)
  * @return: void
  * @ver: 1.0 2019/12/24
  */
-// 参数param表示输出父系// 母系 // 兄弟
 void generationPrintTreeNode(chbrotree *root, int generation)
 {
-<<<<<<< HEAD
-
-    // 用栈暂时保存代数信息
-=======
     int rowTotal = 0;
     chbrotree *p, *pre;
     pre = root;
@@ -697,5 +692,4 @@ void generationPrintTreeNode(chbrotree *root, int generation)
     end = clock();
     timing = (float)(end - start) / CLOCKS_PER_SEC;
     printf("%d rows in table <%.2f sec>\n", rowTotal, timing);
->>>>>>> fd30c266af5a8b6feafcfe8d8ec8191dc1ca2e8a
 }
