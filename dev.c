@@ -214,6 +214,10 @@ int main(int args, char *argv[])
             scanf("%s", name);
             nameFindPerson(mychbrotree, name);
             break;
+        case MODIFY:
+            scanf("%s",name);
+            modify(mychbrotree,name);
+            break;
         case INPUT:
             // input
             scanf("%s%s", relation, relationName);
@@ -268,6 +272,7 @@ void menuPrint()
            "save             format: save [*.dat]\n"
            "idFindPerson     format: idFindPerson [id]\n"
            "nameFindPerson   format: nameFindPerson [name]\n"
+           "modify           format: modify\n"
            "treeInput        format: input [relation][relationName][name][id][sex][age][spouse]"
            "printTreeNode    format: printTreeNode\n"
            "exit             format: exit\n");
@@ -472,6 +477,28 @@ chbrotree *nameFindPerson(chbrotree *root, char *name)
         return p;
     }
     return NULL;
+}
+void modify(chbrotree*root)
+{
+    char name[20];
+    char newname[20];
+    chbrotree*newroot;
+    printf("please enter the name to modify:\n");
+    scanf("%s",name);
+    newroot=nameFindPerson(root, name);
+    if(newroot==NULL)
+    {
+        printf("ERROR!This person doesn't exist in the family tree!");
+        return ;
+    }
+    else
+    {
+        printf("Enter the new name:\n");
+        scanf("%s",newname);
+        if(strcmp(name,newname)!=0)
+        strcpy(name,newname);
+        printf("Modification successful!");
+    }
 }
 
 /**
