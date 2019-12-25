@@ -855,6 +855,168 @@ void printCondition(chbrotree *root, char *name, char *direction, int generation
     }
 }
 
+/*
+void isSpouse (char *s, chbrotree *person, char *name)
+{
+    if (person->myinfo.name == name)
+    {
+        strcpy(s, person->myinfo.sex);
+    }
+    else
+    {
+        if (person->myinfo.sex == "female")
+        {
+            strcpy(s, "male");
+        }
+        else if (person->myinfo.sex == "male")
+        {
+            strcpy(s, "female");
+        }
+    }
+}*/
+
+/**
+ * @description: conGeneration
+ * @author: LiuXiaoxia
+ * @param: chbrotree *firstPerson, chbrotree *secondPerson
+ * @return: chbrotree *
+ * @ver: 1.0 2019/12/25
+ */
+chbrotree *conGeneration (chbrotree *firstPerson, chbrotree *secondPerson)
+{
+    chbrotree *p = firstPerson->myfather->firstchild;
+    while (p)
+    {
+        if (p->myinfo.name == secondPerson->myinfo.name || p->myinfo.spouse == secondPerson->myinfo.name)
+        {
+            return p;
+        }
+        p = p->rightsibling;
+    }
+    return NULL;
+}
+
+struct Relation
+{
+    char relation;
+    char name[200];
+}rela[200];
+
+/**
+ * @description: modifyRelation
+ * @author: LiuXiaoxia
+ * @param: chbrotree *p, int *idx, chbrotree *pp, chbrotree *secondPerson
+ * @return: bool
+ * @ver: 1.0 2019/12/25
+ */
+bool modifyRelation  (chbrotree *p, int *idx, chbrotree *pp, chbrotree *secondPerson)
+{
+    int id = idx;
+    if (p->myinfo.sex == "male")
+    {
+        rela[id].relation = 's';
+        strcpy(rela[id ++].name, p->myinfo.name);
+    }
+    else
+    {
+        rela[id].relation = 'd';
+        strcpy(rela[id ++].name, p->myinfo.name);
+    }
+
+    if (pp)
+    {
+        if (pp->myinfo.sex != secondPerson->myinfo.sex)
+        {
+            rela[id].relation = 'p'; //pÎªÅäÅ¼
+            strcpy(rela[id ++].name, pp->myinfo.name);
+        }
+        return true;
+    }
+    return false;
+}
+
+/**
+ * @description: difGeneration
+ * @author: LiuXiaoxia
+ * @param: chbrotree *root, char *firstName, char *secondName
+ * @return: int
+ * @ver: 1.0 2019/12/25
+ */
+int difGeneration (chbrotree *root, char *firstName, char *secondName)
+{
+    chbrotree *firstPerson = nameFindPerson(root, firstName, MAX_FIND_DEEPTH);
+    chbrotree *secondPerson = nameFindPerson(root, secondName, MAX_FIND_DEEPTH);
+    //char firstSex[100], secondSex[100];
+    //isSpouse(firstSex, firstPerson, firstName);
+    //isSpouse(secondSex, secondPerson, secondName);
+    
+    int idx = 0;
+    chbrotree *p;
+    bool flag = false;
+
+    chbrotree *grandfather = firstPerson->myfather->myfather;
+    rela[idx].relation = 'g';
+    strcpy(rela[idx ++].name, grandfather->myinfo.name);
+    while (grandfather)
+    {
+        p = conGeneration(grandfather, secondPerson);
+        if (p)
+        {
+            if (p->myinfo.sex != secondPerson->myinfo.sex)
+            {
+                rela[idx].relation = 'p';
+                strcpy(rela[idx ++].name, p->myinfo.name);
+            }
+            break;
+        }
+
+        chbrotree *father = grandfather->firstchild;
+        while (father)
+        {
+            p = conGeneration(father, secondPerson);
+            flag = modifyRelation(father, idx, p, secondPerson);
+            if (flag) break;
+
+            chbrotree *brother = father->firstchild;
+            while (brother)
+            {
+                p = conGeneration(brother, secondPerson);
+                flag = modifyRelation(brother, idx, p, secondPerson);
+                if (flag) break;
+
+                chbrotree *son = brother->firstchild;
+                while (son)
+                {
+                    p = conGeneration(son, secondPerson);
+                    flag = modifyRelation(son, idx, p, secondPerson);
+                    if (flag) break;
+
+                    chbrotree *grandson = son->firstchild;
+                    while (grandson)
+                    {
+                        p = conGeneration(grandson, secondPerson);
+                        flag = modifyRelation(grandson, idx, p, secondPerson);
+                        if (flag) break;
+                        grandson = grandson->rightsibling;
+                    }
+                    if (flag) break;
+                    idx -= 2;
+                    son = son->rightsibling;
+                }
+                if (flag) break;
+                idx -= 2;
+                brother = brother->rightsibling;
+            }
+            if (flag) break;
+            idx -= 2;
+            father = father->rightsibling;
+        }
+        if (flag) break;
+        idx -= 2;
+        break;
+    }
+    return --idx;
+}
 void transToAppellation(char *relationStr)
 {
     char appellation[MAX_FIND_DEEPTH][MAX_STRING];
