@@ -294,10 +294,12 @@ int main(int args, char *argv[])
             {
                 // 向下查找只能向下查找1代， 向上查找可以查找父系generation代
                 scanf("%s%s", name, direction);
-                if(!strcmp(direction, "before")){
+                if (!strcmp(direction, "before"))
+                {
                     scanf("%d", &generation);
                 }
-                else if(!strcmp(direction, "after")){
+                else if (!strcmp(direction, "after"))
+                {
                     generation = 1;
                 }
                 printCondition(mychbrotree, name, direction, generation);
@@ -514,6 +516,7 @@ chbrotree *idFindPerson(chbrotree *root, int id)
  * @return: chbrotree *root
  * @ver: 1.0 2019/12/20
  */
+// ！！！查找配偶
 chbrotree *nameFindPerson(chbrotree *root, char *name, int deepth)
 {
     chbrotree *p, *pre;
@@ -839,10 +842,10 @@ void printCondition(chbrotree *root, char *name, char *direction, int generation
         printf("+----------+----------+----------+----------+----------+----------+\n");
         if (!strcmp("after", direction))
         {
-            if(moveDown) pre = pre->firstchild;
+            if (moveDown)
+                pre = pre->firstchild;
             moveDown = false;
             pre = pre->rightsibling;
-
         }
         else if (!strcmp("before", direction))
         {
@@ -870,9 +873,8 @@ void transToAppellation(char *relationStr)
             indexStr += 3;
         }
         appellation[top][indexAppe] = relationStr[indexStr];
-        top ++;
+        top++;
     }
-    
     char *top;
     top = appellation[0];
     return;
