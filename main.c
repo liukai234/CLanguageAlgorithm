@@ -235,7 +235,12 @@ int main(int args, char *argv[])
             if (fileOpenFlag)
             {
                 scanf("%s", name);
-                nameFindPerson(mychbrotree, name);
+                if (!nameFindPerson(mychbrotree, name, MAX_FIND_DEEPTH))
+                {
+                    PRINT_FONT_RED
+                    printf("Not fount\n");
+                    PRINT_ATTR_REC
+                }
             }
             else
             {
@@ -497,31 +502,18 @@ chbrotree *idFindPerson(chbrotree *root, int id)
 /**
  * @description: findPerson
  * @author: LiuKai
- * @param: chbrotree *root, char *name
+ * @param: chbrotree *root, char *name, int deepth (deepth参数表示查找深度)
+ * 当查找深度deepth设置为MAX_FIND_DEEPTH时默认为最大深度
  * @return: chbrotree *root
  * @ver: 1.0 2019/12/20
  */
-// set flag
-chbrotree *nameFindPerson(chbrotree *root, char *name)
+chbrotree *nameFindPerson(chbrotree *root, char *name, int deepth)
 {
-    /* if (root->rightsibling == NULL && root->firstchild == NULL)
-    {
-        return root;
-    } */
-    /* if (!strcmp(root->myinfo.name, name))
-    {
-        return root;
-    }
-    nameFindPerson(root->rightsibling, name);
-    nameFindPerson(root->firstchild, name);
-    return NULL; */
-    //
-
     chbrotree *p, *pre;
     chbrotree *address[MAX_STRING];
     pre = root;
     int index = 0;
-    while (pre)
+    while (pre && (deepth--))
     {
         p = pre;
         while (p)
@@ -547,15 +539,18 @@ chbrotree *nameFindPerson(chbrotree *root, char *name)
                "+----------+----------+----------+----------+----------+----------+\n");
         for (int i = 0; i < index; i++)
         {
-            printf("|%-10s|%-10d|%-10s|%-10s|%-10s|%-10s|\n", address[index]->myinfo.name, address[index]->myinfo.id, address[index]->myinfo.sex,
-                   address[index]->myinfo.birth, address[index]->myinfo.father, address[index]->myinfo.spouse);
+            printf("|%-10s|%-10d|%-10s|%-10s|%-10s|%-10s|\n", address[i]->myinfo.name, address[i]->myinfo.id, address[i]->myinfo.sex,
+                   address[i]->myinfo.birth, address[i]->myinfo.father, address[i]->myinfo.spouse);
             printf("+----------+----------+----------+----------+----------+----------+\n");
         }
         printf("Input id to find:\n");
         int myIdFind;
         scanf("%d", &myIdFind);
-        p = idFindPerson(root, myIdFind);
-        return p;
+        for(int i = 0; i < index; i++){
+            if(address[i]->myinfo.id == myIdFind){
+                return p;
+            }
+        }
     }
     return NULL;
 }
@@ -565,7 +560,7 @@ chbrotree *modify(chbrotree *root, char *name)
     info myinfo;
     printf("enter the name to modify:\n");
     chbrotree *p;
-    p = nameFindPerson(root, name);
+    p = nameFindPerson(root, name, MAX_FIND_DEEPTH);
     if (p == NULL)
     {
         printf("ERROR!This person doesn't exist in the family tree!");
@@ -616,7 +611,7 @@ chbrotree *treeInput(chbrotree *root, info myinfo, char *relation, char *relatio
         return root;
     }
 
-    chbrotree *pre = nameFindPerson(root, relationName);
+    chbrotree *pre = nameFindPerson(root, relationName, MAX_FIND_DEEPTH);
     if (pre == NULL)
     {
         PRINT_FONT_RED
@@ -626,7 +621,7 @@ chbrotree *treeInput(chbrotree *root, info myinfo, char *relation, char *relatio
     }
     if (!strcmp(relation, "father") || !strcmp(relation, "mother"))
     {
-        addChildToFather(pre, node);
+        pre = addChildToFather(pre, node);
     }
     else if (!strcmp(relation, "uncle") || !strcmp(relation, "aunt"))
     {
@@ -813,8 +808,8 @@ void generationPrintTreeNode(chbrotree *root, int generation)
 void printCondition(chbrotree *root, char *name, char *direction, int generation)
 {
     int i = 0;
-    generation ++;
-    chbrotree *pre = nameFindPerson(root, name);
+    generation++;
+    chbrotree *pre = nameFindPerson(root, name, MAX_FIND_DEEPTH);
     if (pre == NULL)
     {
         PRINT_FONT_RED
@@ -843,95 +838,165 @@ void printCondition(chbrotree *root, char *name, char *direction, int generation
     }
 }
 
-chbrotree *conGeneration (chbrotree *firstName, chbrotree *secondName, int *sex)
+/*
+void isSpouse (char *s, chbrotree *person, char *name)
 {
-    sex = 1; //1为男性，0为女性
-    chbrotree *p = firstName->myfather->firstchild;
+    if (person->myinfo.name == name)
+    {
+        strcpy(s, person->myinfo.sex);
+    }
+    else
+    {
+        if (person->myinfo.sex == "female")
+        {
+            strcpy(s, "male");
+        }
+        else if (person->myinfo.sex == "male")
+        {
+            strcpy(s, "female");
+        }
+    }
+}*/
+
+/**
+ * @description: conGeneration
+ * @author: LiuXiaoxia
+ * @param: chbrotree *firstPerson, chbrotree *secondPerson
+ * @return: chbrotree *
+ * @ver: 1.0 2019/12/25
+ */
+chbrotree *conGeneration (chbrotree *firstPerson, chbrotree *secondPerson)
+{
+    chbrotree *p = firstPerson->myfather->firstchild;
     while (p)
     {
-        if (p->myinfo.name == secondName->myinfo.name)
+        if (p->myinfo.name == secondPerson->myinfo.name || p->myinfo.spouse == secondPerson->myinfo.name)
         {
             return p;
-            break;
-        }
-        else if (p->myinfo.spouse == secondName->myinfo.name)
-        {
-            sex = 0;
-            return p;
-            break;
         }
         p = p->rightsibling;
     }
     return NULL;
 }
 
-chbrotree *difGeneration (chbrotree *root, char *firstName, char *secondName)
+struct Relation
 {
-    chbrotree *firstPerson = nameFindPerson(root, firstName, 5);
-    chbrotree *secondPerson = nameFindPerson(root, secondName, 5);
+    char relation;
+    char name[200];
+}rela[200];
+
+/**
+ * @description: modifyRelation
+ * @author: LiuXiaoxia
+ * @param: chbrotree *p, int *idx, chbrotree *pp, chbrotree *secondPerson
+ * @return: bool
+ * @ver: 1.0 2019/12/25
+ */
+bool modifyRelation  (chbrotree *p, int *idx, chbrotree *pp, chbrotree *secondPerson)
+{
+    int id = idx;
+    if (p->myinfo.sex == "male")
+    {
+        rela[id].relation = 's';
+        strcpy(rela[id ++].name, p->myinfo.name);
+    }
+    else
+    {
+        rela[id].relation = 'd';
+        strcpy(rela[id ++].name, p->myinfo.name);
+    }
+
+    if (pp)
+    {
+        if (pp->myinfo.sex != secondPerson->myinfo.sex)
+        {
+            rela[id].relation = 'p'; //p为配偶
+            strcpy(rela[id ++].name, pp->myinfo.name);
+        }
+        return true;
+    }
+    return false;
+}
+
+/**
+ * @description: difGeneration
+ * @author: LiuXiaoxia
+ * @param: chbrotree *root, char *firstName, char *secondName
+ * @return: int
+ * @ver: 1.0 2019/12/25
+ */
+int difGeneration (chbrotree *root, char *firstName, char *secondName)
+{
+    chbrotree *firstPerson = nameFindPerson(root, firstName, MAX_FIND_DEEPTH);
+    chbrotree *secondPerson = nameFindPerson(root, secondName, MAX_FIND_DEEPTH);
+    //char firstSex[100], secondSex[100];
+    //isSpouse(firstSex, firstPerson, firstName);
+    //isSpouse(secondSex, secondPerson, secondName);
+    
+    int idx = 0;
     chbrotree *p;
-    int sex;
-    chbrotree *grandfather = firstName->myfather->myfather->myfather->firstchild;
-    p = conGeneration(grandfather, secondName, &sex);
-    if (p)
+    bool flag = false;
+
+    chbrotree *grandfather = firstPerson->myfather->myfather;
+    rela[idx].relation = 'g';
+    strcpy(rela[idx ++].name, grandfather->myinfo.name);
+    while (grandfather)
     {
-        printf("%s is %s's grandfather", p->myinfo.name, firstName->myinfo.name);
-        if (p != firstName->myfather->myfather)
+        p = conGeneration(grandfather, secondPerson);
+        if (p)
         {
-            printf("'s brother");
+            if (p->myinfo.sex != secondPerson->myinfo.sex)
+            {
+                rela[idx].relation = 'p';
+                strcpy(rela[idx ++].name, p->myinfo.name);
+            }
+            break;
         }
 
-        if (sex)
+        chbrotree *father = grandfather->firstchild;
+        while (father)
         {
-            printf(".\n");
-        }
-        else 
-        {
-            printf("'s spouse.\n");
-        }
-    }
+            p = conGeneration(father, secondPerson);
+            flag = modifyRelation(father, idx, p, secondPerson);
+            if (flag) break;
 
-    chbrotree *father = grandfather->firstchild;
-    p = conGeneration(father, secondName);
-    if (p)
-    {
-        printf("%s is %s's father", p->myinfo.name, firstName->myinfo.name);
-        if (p != firstName->myfather)
-        {
-            printf("'s brother.\n");
-        }
-        else 
-        {
-            printf(".\n");
-        }
-    }
+            chbrotree *brother = father->firstchild;
+            while (brother)
+            {
+                p = conGeneration(brother, secondPerson);
+                flag = modifyRelation(brother, idx, p, secondPerson);
+                if (flag) break;
 
-    chbrotree *brother = father->firstchild;
-    p = conGeneration(brother, secondName);
-    if (p)
-    {
-        if (p != firstName)
-        {
-            printf("%s is %s's brother.\n", p->myinfo.name, firstName->myinfo.name);
-        }
-        else 
-        {
-            printf("These two are the same person.\n");
-        }
-    }
+                chbrotree *son = brother->firstchild;
+                while (son)
+                {
+                    p = conGeneration(son, secondPerson);
+                    flag = modifyRelation(son, idx, p, secondPerson);
+                    if (flag) break;
 
-    chbrotree *son = brother->firstchild;
-    p = conGeneration(father, secondName);
-    if (p)
-    {
-        printf("%s is %s's son.\n", p->myinfo.name, firstName->myinfo.name);
+                    chbrotree *grandson = son->firstchild;
+                    while (grandson)
+                    {
+                        p = conGeneration(grandson, secondPerson);
+                        flag = modifyRelation(grandson, idx, p, secondPerson);
+                        if (flag) break;
+                        grandson = grandson->rightsibling;
+                    }
+                    if (flag) break;
+                    idx -= 2;
+                    son = son->rightsibling;
+                }
+                if (flag) break;
+                idx -= 2;
+                brother = brother->rightsibling;
+            }
+            if (flag) break;
+            idx -= 2;
+            father = father->rightsibling;
+        }
+        if (flag) break;
+        idx -= 2;
+        break;
     }
-
-    chbrotree *grandson = son->firstchild;
-    p = conGeneration(father, secondName);
-    if (p)
-    {
-        printf("%s is %s's grandson.\n", p->myinfo.name, firstName->myinfo.name);
-    }
-    return NULL;
+    return --idx;
 }

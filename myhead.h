@@ -16,8 +16,9 @@
 
 #define MAX_FILE_NAME 100 // 文件名的长度
 #define MAX_STRING 100
-#define MENU_SEL 14       // 菜单长度宏
-#define MAX_FILE_NUM 1000 // 最大文件数量
+#define MENU_SEL 14         // 菜单长度宏
+#define MAX_FILE_NUM 1000   // 最大文件数量
+#define MAX_FIND_DEEPTH 100 // 最大查找深度
 
 #define MENU_PRINT 0
 #define LS 1
@@ -121,7 +122,7 @@ void mk(char *inputFileName);
 chbrotree *load(chbrotree *root, char *fileName);
 bool save(chbrotree *root, char *fileName);
 chbrotree *idFindPerson(chbrotree *root, int id);
-chbrotree *nameFindPerson(chbrotree *root, char *name);
+chbrotree *nameFindPerson(chbrotree *root, char *name, int deepth);
 chbrotree *treeInput(chbrotree *root, info myinfo, char *relation, char *relationName);
 chbrotree *mallocTreeNode(chbrotree *node, info myinfo);
 void printTreeNode(chbrotree *root);
