@@ -235,7 +235,12 @@ int main(int args, char *argv[])
             if (fileOpenFlag)
             {
                 scanf("%s", name);
-                nameFindPerson(mychbrotree, name);
+                if (!nameFindPerson(mychbrotree, name, MAX_FIND_DEEPTH))
+                {
+                    PRINT_FONT_RED
+                    printf("Not fount\n");
+                    PRINT_ATTR_REC
+                }
             }
             else
             {
@@ -497,31 +502,18 @@ chbrotree *idFindPerson(chbrotree *root, int id)
 /**
  * @description: findPerson
  * @author: LiuKai
- * @param: chbrotree *root, char *name
+ * @param: chbrotree *root, char *name, int deepth (deepth参数表示查找深度)
+ * 当查找深度deepth设置为MAX_FIND_DEEPTH时默认为最大深度
  * @return: chbrotree *root
  * @ver: 1.0 2019/12/20
  */
-// set flag
-chbrotree *nameFindPerson(chbrotree *root, char *name)
+chbrotree *nameFindPerson(chbrotree *root, char *name, int deepth)
 {
-    /* if (root->rightsibling == NULL && root->firstchild == NULL)
-    {
-        return root;
-    } */
-    /* if (!strcmp(root->myinfo.name, name))
-    {
-        return root;
-    }
-    nameFindPerson(root->rightsibling, name);
-    nameFindPerson(root->firstchild, name);
-    return NULL; */
-    //
-
     chbrotree *p, *pre;
     chbrotree *address[MAX_STRING];
     pre = root;
     int index = 0;
-    while (pre)
+    while (pre && (deepth--))
     {
         p = pre;
         while (p)
@@ -547,15 +539,18 @@ chbrotree *nameFindPerson(chbrotree *root, char *name)
                "+----------+----------+----------+----------+----------+----------+\n");
         for (int i = 0; i < index; i++)
         {
-            printf("|%-10s|%-10d|%-10s|%-10s|%-10s|%-10s|\n", address[index]->myinfo.name, address[index]->myinfo.id, address[index]->myinfo.sex,
-                   address[index]->myinfo.birth, address[index]->myinfo.father, address[index]->myinfo.spouse);
+            printf("|%-10s|%-10d|%-10s|%-10s|%-10s|%-10s|\n", address[i]->myinfo.name, address[i]->myinfo.id, address[i]->myinfo.sex,
+                   address[i]->myinfo.birth, address[i]->myinfo.father, address[i]->myinfo.spouse);
             printf("+----------+----------+----------+----------+----------+----------+\n");
         }
         printf("Input id to find:\n");
         int myIdFind;
         scanf("%d", &myIdFind);
-        p = idFindPerson(root, myIdFind);
-        return p;
+        for(int i = 0; i < index; i++){
+            if(address[i]->myinfo.id == myIdFind){
+                return p;
+            }
+        }
     }
     return NULL;
 }
@@ -565,7 +560,7 @@ chbrotree *modify(chbrotree *root, char *name)
     info myinfo;
     printf("enter the name to modify:\n");
     chbrotree *p;
-    p = nameFindPerson(root, name);
+    p = nameFindPerson(root, name, MAX_FIND_DEEPTH);
     if (p == NULL)
     {
         printf("ERROR!This person doesn't exist in the family tree!");
@@ -616,7 +611,7 @@ chbrotree *treeInput(chbrotree *root, info myinfo, char *relation, char *relatio
         return root;
     }
 
-    chbrotree *pre = nameFindPerson(root, relationName);
+    chbrotree *pre = nameFindPerson(root, relationName, MAX_FIND_DEEPTH);
     if (pre == NULL)
     {
         PRINT_FONT_RED
@@ -626,7 +621,7 @@ chbrotree *treeInput(chbrotree *root, info myinfo, char *relation, char *relatio
     }
     if (!strcmp(relation, "father") || !strcmp(relation, "mother"))
     {
-        addChildToFather(pre, node);
+        pre = addChildToFather(pre, node);
     }
     else if (!strcmp(relation, "uncle") || !strcmp(relation, "aunt"))
     {
@@ -813,7 +808,7 @@ void generationPrintTreeNode(chbrotree *root, int generation)
 void printCondition(chbrotree *root, char *name, char *direction, int generation)
 {
     int i = 0;
-    generation ++;
+    generation++;
     chbrotree *pre = nameFindPerson(root, name);
     if (pre == NULL)
     {
@@ -841,4 +836,14 @@ void printCondition(chbrotree *root, char *name, char *direction, int generation
             pre = pre->myfather;
         }
     }
+}
+
+chbrotree *conGenerat(chbrotree *root, char *name1, char *name2)
+{
+    return NULL;
+}
+
+chbrotree *diffGenerat(chbrotree *root, char *name1, char *name2)
+{
+    return NULL;
 }
