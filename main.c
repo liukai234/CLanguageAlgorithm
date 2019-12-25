@@ -809,7 +809,7 @@ void printCondition(chbrotree *root, char *name, char *direction, int generation
 {
     int i = 0;
     generation++;
-    chbrotree *pre = nameFindPerson(root, name);
+    chbrotree *pre = nameFindPerson(root, name, MAX_FIND_DEEPTH);
     if (pre == NULL)
     {
         PRINT_FONT_RED
