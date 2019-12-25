@@ -2,7 +2,7 @@
  * @description: dev版本
  * @file: dev.c
  * @author: LiuKai
- * @ver: 2.0 2019/12/21
+ * @ver: 3.0 2019/12/21
  */
 #include "myhead.h"
 #include "exception.h"
@@ -187,58 +187,121 @@ int main(int args, char *argv[])
             break;
         case CLEAR:
             // clear清空正在打开的数据文件
-            PRINT_FONT_RED
-            printf("Empty this file?\n");
-            PRINT_ATTR_REC
-            printf("continue?(input 'y' or 'Y' to continue)\n");
-            char consel[1];
-            scanf("%s", consel);
-            if (consel[0] == 'Y' || consel[0] == 'y')
+            if (fileOpenFlag)
             {
-                mychbrotree = delAllTree(mychbrotree);
-                save(mychbrotree, inputFileName);
-                printf("clear successful\n");
-                mychbrotree = load(mychbrotree, inputFileName);
-                printf("Reload finished\n");
+
+                PRINT_FONT_RED
+                printf("Empty this file?\n");
+                PRINT_ATTR_REC
+                printf("continue?(input 'y' or 'Y' to continue)\n");
+                char consel[1];
+                scanf("%s", consel);
+                if (consel[0] == 'Y' || consel[0] == 'y')
+                {
+                    mychbrotree = delAllTree(mychbrotree);
+                    save(mychbrotree, inputFileName);
+                    printf("clear successful\n");
+                    mychbrotree = load(mychbrotree, inputFileName);
+                    printf("Reload finished\n");
+                }
+                else
+                {
+                    printf("operation aborted\n");
+                }
             }
             else
             {
-                printf("operation aborted\n");
+                PRINT_FONT_RED
+                printf("No file is opening\n");
+                PRINT_ATTR_REC
             }
             break;
         case ID_FIND_PERSON:
-            scanf("%d", &IdFind);
-            idFindPerson(mychbrotree, IdFind);
+            if (fileOpenFlag)
+            {
+                scanf("%d", &IdFind);
+                idFindPerson(mychbrotree, IdFind);
+            }
+            else
+            {
+                PRINT_FONT_RED
+                printf("No file is opening\n");
+                PRINT_ATTR_REC
+            }
             break;
         case NAME_FIND_PERSON:
-            scanf("%s", name);
-            nameFindPerson(mychbrotree, name);
+            if (fileOpenFlag)
+            {
+                scanf("%s", name);
+                nameFindPerson(mychbrotree, name);
+            }
+            else
+            {
+                PRINT_FONT_RED
+                printf("No file is opening\n");
+                PRINT_ATTR_REC
+            }
             break;
         case MODIFY:
-            scanf("%s",name);
-            modify(mychbrotree,name);
+            if (fileOpenFlag)
+            {
+                scanf("%s", name);
+                mychbrotree = modify(mychbrotree, name);
+            }
+            else
+            {
+                PRINT_FONT_RED
+                printf("No file is opening\n");
+                PRINT_ATTR_REC
+            }
             break;
         case INPUT:
             // input
-            scanf("%s%s", relation, relationName);
-            scanf("%s%s%s%s", myinfo.name, myinfo.sex, myinfo.age, myinfo.spouse);
-            mychbrotree = treeInput(mychbrotree, myinfo, relation, relationName);
+            if (fileOpenFlag)
+            {
+                scanf("%s%s", relation, relationName);
+                scanf("%s%s%s%s", myinfo.name, myinfo.sex, myinfo.birth, myinfo.spouse);
+                mychbrotree = treeInput(mychbrotree, myinfo, relation, relationName);
+            }
+            else
+            {
+                PRINT_FONT_RED
+                printf("No file is opening\n");
+                PRINT_ATTR_REC
+            }
             break;
         case PRINT_TREE_NODE:
-            printTreeNode(mychbrotree);
+            if (fileOpenFlag)
+            {
+                printTreeNode(mychbrotree);
+            }
+            else
+            {
+                PRINT_FONT_RED
+                printf("No file is opening\n");
+                PRINT_ATTR_REC
+            }
             break;
         case EXIT:
             exitFlag = true;
             // 保存文件
-            if (mychbrotree != NULL)
+            if (fileOpenFlag)
             {
-                save(mychbrotree, outputFileName);
-                printf("Save finished\n");
+                if (save(mychbrotree, outputFileName))
+                {
+                    printf("Save finished\n");
+                    // 释放内存
+                    mychbrotree = delAllTree(mychbrotree);
+                    mychbrotree = NULL;
+                    fileOpenFlag = false;
+                }
+                else
+                {
+                    PRINT_FONT_RED
+                    printf("Not save, retry\n");
+                    PRINT_ATTR_REC
+                }
             }
-            // 没有释放内存
-            mychbrotree = delAllTree(mychbrotree);
-            mychbrotree = NULL;
-            fileOpenFlag = false;
             break;
         default:
             printf("'%s' is not an internal command\n", strSel);
@@ -267,14 +330,15 @@ void menuPrint()
            "ls               format: ls\n"
            "mk               format: mk [*.dat]\n"
            "open             format: open [*.dat]\n"
-           "close and save   format: close"
+           "save and close   format: close\n"
            "load             format: laod [*.dat]\n"
-           "save             format: save [*.dat]\n"
+           "del              format: del [*.dat]\n"
+           "clear all date   format: clear\n"
            "idFindPerson     format: idFindPerson [id]\n"
            "nameFindPerson   format: nameFindPerson [name]\n"
-           "modify           format: modify\n"
-           "treeInput        format: input [relation][relationName][name][id][sex][age][spouse]"
-           "printTreeNode    format: printTreeNode\n"
+           "modify           format: modify [searchName]\n"
+           "treeInput        format: input [relation][relationName][name][sex][birth][spouse]\n"
+           "printTreeNode    format: printTree\n"
            "exit             format: exit\n");
 }
 
@@ -369,6 +433,7 @@ bool save(chbrotree *root, char *fileName)
     {
         PRINT_FONT_RED
         fprintf(stderr, "%s\n", strerror(errno));
+        PRINT_ATTR_REC
         return false;
     }
     pre = root;
@@ -462,12 +527,12 @@ chbrotree *nameFindPerson(chbrotree *root, char *name)
     {
         // 调用条件输出
         printf("+----------+----------+----------+----------+----------+----------+\n"
-               "|Name      |ID        |Sex       |Age       |Father    |Spouse    |\n"
+               "|Name      |ID        |Sex       |Birth     |Father    |Spouse    |\n"
                "+----------+----------+----------+----------+----------+----------+\n");
         for (int i = 0; i < index; i++)
         {
             printf("|%-10s|%-10d|%-10s|%-10s|%-10s|%-10s|\n", address[index]->myinfo.name, address[index]->myinfo.id, address[index]->myinfo.sex,
-                   address[index]->myinfo.age, address[index]->myinfo.father, address[index]->myinfo.spouse);
+                   address[index]->myinfo.birth, address[index]->myinfo.father, address[index]->myinfo.spouse);
             printf("+----------+----------+----------+----------+----------+----------+\n");
         }
         printf("Input id to find:\n");
@@ -479,33 +544,23 @@ chbrotree *nameFindPerson(chbrotree *root, char *name)
     return NULL;
 }
 
-/**
- * @description: modify
- * @author: LiuXiaofang
- * @param: chbrotree *root
- * @return: void
- * @ver: 1.0 2019/12/24
- */
-void modify (chbrotree *root)
+chbrotree *modify(chbrotree *root, char *name)
 {
-    char name[20];
-    char newname[20];
-    chbrotree*newroot;
-    printf("please enter the name to modify:\n");
-    scanf("%s",name);
-    newroot=nameFindPerson(root, name);
-    if(newroot==NULL)
+    info myinfo;
+    printf("enter the name to modify:\n");
+    chbrotree *p;
+    p = nameFindPerson(root, name);
+    if (p == NULL)
     {
         printf("ERROR!This person doesn't exist in the family tree!");
-        return ;
+        return NULL;
     }
     else
     {
-        printf("Enter the new name:\n");
-        scanf("%s",newname);
-        if(strcmp(name,newname)!=0)
-        strcpy(name,newname);
-        printf("Modification successful!");
+        printf("Enter the new info:\n");
+        scanf("%s%s%s%s%s", p->myinfo.name, p->myinfo.sex,
+              p->myinfo.birth, p->myinfo.father, p->myinfo.spouse);
+        return root;
     }
 }
 
@@ -649,13 +704,13 @@ void printTreeNode(chbrotree *root)
     // 设计输出表格
     /*
     +---------+----------+--------+-------+----------+
-    |Name     |ID        |sex     |age    |Spouse    |          
+    |Name     |ID        |sex     |Birth  |Spouse    |          
     +---------+----------+--------+-------+----------+
     |1        |2         |3       |4      |5         |
     +---------+----------+--------+-------+----------+
     1 rows in table
     */
-    /* printf("%s %d %s %s %s\n", root->myinfo.name, root->myinfo.id, root->myinfo.sex, root->myinfo.age, root->myinfo.spouse);
+    /* printf("%s %d %s %s %s\n", root->myinfo.name, root->myinfo.id, root->myinfo.sex, root->myinfo.birth, root->myinfo.spouse);
     printTreeNode(root->rightsibling);
     // PRINT_FONT_RED
     printTreeNode(root->firstchild); */
@@ -669,7 +724,7 @@ void printTreeNode(chbrotree *root)
     printf(">>>\n");
     PRINT_ATTR_REC
     printf("+----------+----------+----------+----------+----------+----------+\n"
-           "|Name      |ID        |Sex       |Age       |Father    |Spouse    |\n"
+           "|Name      |ID        |Sex       |Birth     |Father    |Spouse    |\n"
            "+----------+----------+----------+----------+----------+----------+\n");
     while (pre)
     {
@@ -677,7 +732,7 @@ void printTreeNode(chbrotree *root)
         while (p)
         {
             printf("|%-10s|%-10d|%-10s|%-10s|%-10s|%-10s|\n", p->myinfo.name, p->myinfo.id, p->myinfo.sex,
-                   p->myinfo.age, p->myinfo.father, p->myinfo.spouse);
+                   p->myinfo.birth, p->myinfo.father, p->myinfo.spouse);
             printf("+----------+----------+----------+----------+----------+----------+\n");
             rowTotal++;
             p = p->rightsibling;
@@ -708,7 +763,7 @@ void generationPrintTreeNode(chbrotree *root, int generation)
     printf(">>>\n");
     PRINT_ATTR_REC
     printf("+----------+----------+----------+----------+----------+----------+\n"
-           "|Name      |ID        |Sex       |Age       |Father    |Spouse    |\n"
+           "|Name      |ID        |Sex       |Birth     |Father    |Spouse    |\n"
            "+----------+----------+----------+----------+----------+----------+\n");
     while (generation)
     {
@@ -716,13 +771,13 @@ void generationPrintTreeNode(chbrotree *root, int generation)
         while (p)
         {
             printf("|%-10s|%-10d|%-10s|%-10s|%-10s|%-10s|\n", p->myinfo.name, p->myinfo.id, p->myinfo.sex,
-                   p->myinfo.age, p->myinfo.father, p->myinfo.spouse);
+                   p->myinfo.birth, p->myinfo.father, p->myinfo.spouse);
             printf("+----------+----------+----------+----------+----------+----------+\n");
             rowTotal++;
             p = p->rightsibling;
         }
         pre = pre->firstchild;
-        generation --;
+        generation--;
     }
     end = clock();
     timing = (float)(end - start) / CLOCKS_PER_SEC;

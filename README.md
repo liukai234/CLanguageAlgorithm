@@ -1,6 +1,9 @@
 # Team private project
 ---
 # update
+# ver 3.0 2019/12/24
+1. 代码功能完善暂未发现bug
+2. 支持不同关系的录入和按条件输出
 # 2019/12/23
 1. 用fileOpenFlag == TRUE代替mychbrotree != NULL来判断文件是否打开
 2. 增加文件未打开时close的提示语
