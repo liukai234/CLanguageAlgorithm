@@ -292,7 +292,14 @@ int main(int args, char *argv[])
         case GENERAT:
             if (fileOpenFlag)
             {
-                scanf("%s%s%d", name, direction, &generation);
+                // 向下查找只能向下查找1代， 向上查找可以查找父系generation代
+                scanf("%s%s", name, direction);
+                if(!strcmp(direction, "before")){
+                    scanf("%d", &generation);
+                }
+                else if(!strcmp(direction, "after")){
+                    generation = 1;
+                }
                 printCondition(mychbrotree, name, direction, generation);
             }
             else
@@ -359,7 +366,7 @@ void menuPrint()
            "modify           format: modify [searchName]\n"
            "treeInput        format: input [relation][relationName][name][sex][birth][spouse]\n"
            "printTreeNode    format: printTree\n"
-           "printGenerat     fotmat: printGenert [name][direction][generat]\n"
+           "printGenerat     fotmat:  printGenert [name][after] or printGenert [name][before][generat]\n"
            "exit             format: exit\n");
 }
 
@@ -546,8 +553,10 @@ chbrotree *nameFindPerson(chbrotree *root, char *name, int deepth)
         printf("Input id to find:\n");
         int myIdFind;
         scanf("%d", &myIdFind);
-        for(int i = 0; i < index; i++){
-            if(address[i]->myinfo.id == myIdFind){
+        for (int i = 0; i < index; i++)
+        {
+            if (address[i]->myinfo.id == myIdFind)
+            {
                 return p;
             }
         }
@@ -809,6 +818,7 @@ void printCondition(chbrotree *root, char *name, char *direction, int generation
 {
     int i = 0;
     generation++;
+    bool moveDown = true;
     chbrotree *pre = nameFindPerson(root, name, MAX_FIND_DEEPTH);
     if (pre == NULL)
     {
@@ -822,18 +832,22 @@ void printCondition(chbrotree *root, char *name, char *direction, int generation
     printf("+----------+----------+----------+----------+----------+----------+\n"
            "|Name      |ID        |Sex       |Birth     |Father    |Spouse    |\n"
            "+----------+----------+----------+----------+----------+----------+\n");
-    while ((generation--) && pre != NULL)
+    while (generation && pre != NULL)
     {
         printf("|%-10s|%-10d|%-10s|%-10s|%-10s|%-10s|\n", pre->myinfo.name, pre->myinfo.id, pre->myinfo.sex,
                pre->myinfo.birth, pre->myinfo.father, pre->myinfo.spouse);
         printf("+----------+----------+----------+----------+----------+----------+\n");
         if (!strcmp("after", direction))
         {
-            pre = pre->firstchild;
+            if(moveDown) pre = pre->firstchild;
+            moveDown = false;
+            pre = pre->rightsibling;
+
         }
         else if (!strcmp("before", direction))
         {
             pre = pre->myfather;
+            generation--;
         }
     }
 }
@@ -999,4 +1013,29 @@ int difGeneration (chbrotree *root, char *firstName, char *secondName)
         break;
     }
     return --idx;
+}
+void transToAppellation(char *relationStr)
+{
+    char appellation[MAX_FIND_DEEPTH][MAX_STRING];
+    char prefix[MAX_STRING];
+    int indexStr = 0; // relationStr下标
+    int top = 0;      // 栈顶
+    for (indexStr = 0; relationStr[indexStr] != '\''; indexStr++)
+    {
+        prefix[indexStr] = relationStr[indexStr];
+    }
+    prefix[indexStr] = '\n';
+    for (int indexAppe = 0; relationStr[indexStr] != '\0'; indexStr++, indexAppe++)
+    {
+        if (relationStr[indexStr] == '\'' && relationStr[indexStr + 1] == 's')
+        {
+            indexStr += 3;
+        }
+        appellation[top][indexAppe] = relationStr[indexStr];
+        top ++;
+    }
+    
+    char *top;
+    top = appellation[0];
+    return;
 }
