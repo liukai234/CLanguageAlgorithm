@@ -842,3 +842,96 @@ void printCondition(chbrotree *root, char *name, char *direction, int generation
         }
     }
 }
+
+chbrotree *conGeneration (chbrotree *firstName, chbrotree *secondName, int *sex)
+{
+    sex = 1; //1为男性，0为女性
+    chbrotree *p = firstName->myfather->firstchild;
+    while (p)
+    {
+        if (p->myinfo.name == secondName->myinfo.name)
+        {
+            return p;
+            break;
+        }
+        else if (p->myinfo.spouse == secondName->myinfo.name)
+        {
+            sex = 0;
+            return p;
+            break;
+        }
+        p = p->rightsibling;
+    }
+    return NULL;
+}
+
+chbrotree *difGeneration (chbrotree *root, char *firstName, char *secondName)
+{
+    chbrotree *firstPerson = nameFindPerson(root, firstName, 5);
+    chbrotree *secondPerson = nameFindPerson(root, secondName, 5);
+    chbrotree *p;
+    int sex;
+    chbrotree *grandfather = firstName->myfather->myfather->myfather->firstchild;
+    p = conGeneration(grandfather, secondName, &sex);
+    if (p)
+    {
+        printf("%s is %s's grandfather", p->myinfo.name, firstName->myinfo.name);
+        if (p != firstName->myfather->myfather)
+        {
+            printf("'s brother");
+        }
+
+        if (sex)
+        {
+            printf(".\n");
+        }
+        else 
+        {
+            printf("'s spouse.\n");
+        }
+    }
+
+    chbrotree *father = grandfather->firstchild;
+    p = conGeneration(father, secondName);
+    if (p)
+    {
+        printf("%s is %s's father", p->myinfo.name, firstName->myinfo.name);
+        if (p != firstName->myfather)
+        {
+            printf("'s brother.\n");
+        }
+        else 
+        {
+            printf(".\n");
+        }
+    }
+
+    chbrotree *brother = father->firstchild;
+    p = conGeneration(brother, secondName);
+    if (p)
+    {
+        if (p != firstName)
+        {
+            printf("%s is %s's brother.\n", p->myinfo.name, firstName->myinfo.name);
+        }
+        else 
+        {
+            printf("These two are the same person.\n");
+        }
+    }
+
+    chbrotree *son = brother->firstchild;
+    p = conGeneration(father, secondName);
+    if (p)
+    {
+        printf("%s is %s's son.\n", p->myinfo.name, firstName->myinfo.name);
+    }
+
+    chbrotree *grandson = son->firstchild;
+    p = conGeneration(father, secondName);
+    if (p)
+    {
+        printf("%s is %s's grandson.\n", p->myinfo.name, firstName->myinfo.name);
+    }
+    return NULL;
+}
