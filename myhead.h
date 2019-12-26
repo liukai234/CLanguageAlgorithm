@@ -19,6 +19,7 @@
 #define MENU_SEL 15         // 菜单长度宏
 #define MAX_FILE_NUM 1000   // 最大文件数量
 #define MAX_FIND_DEEPTH 100 // 最大查找深度
+#define MAX_PERSON_NUM 1000 // 最大人数
 
 #define MENU_PRINT 0
 #define LS 1
@@ -116,6 +117,15 @@ typedef struct linkQueue0
     chbrotree node;
     struct linkQueue0 *next;
 } linkQueue;
+
+
+typedef struct Relation0
+{
+    char relation;
+    char name[MAX_STRING];
+} Relation;
+Relation rela[MAX_PERSON_NUM];
+
 
 // 前向声明块
 void menuPrint();

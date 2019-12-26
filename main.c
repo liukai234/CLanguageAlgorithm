@@ -316,7 +316,6 @@ int main(int args, char *argv[])
             scanf("%s%s", firstName, secondName);
             chbrotree *firstPerson = nameFindPerson(mychbrotree, firstName, MAX_FIND_DEEPTH);
             chbrotree *secondPerson = nameFindPerson(mychbrotree, secondName, MAX_FIND_DEEPTH);
-            // int idx = difGeneration(mychbrotree, firstPerson, secondPerson);
             transToAppellation(mychbrotree, firstPerson, secondPerson);
             break;
         case EXIT:
@@ -936,13 +935,6 @@ chbrotree *conGeneration(chbrotree *firstPerson, chbrotree *secondPerson)
     }
     return NULL;
 }
-
-typedef struct Relation0
-{
-    char relation;
-    char name[200];
-} Relation;
-Relation rela[200];
 
 /**
  * @description: modifyRelation
