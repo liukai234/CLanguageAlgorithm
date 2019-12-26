@@ -16,7 +16,7 @@
 
 #define MAX_FILE_NAME 100 // 文件名的长度
 #define MAX_STRING 100
-#define MENU_SEL 14         // 菜单长度宏
+#define MENU_SEL 15         // 菜单长度宏
 #define MAX_FILE_NUM 1000   // 最大文件数量
 #define MAX_FIND_DEEPTH 100 // 最大查找深度
 
@@ -34,6 +34,7 @@
 #define CLEAR 11
 #define MODIFY 12
 #define GENERAT 13
+#define FIND_RELATION 14
 char menuSel[MENU_SEL][MAX_FILE_NAME] = {"help",
                                          "ls",
                                          "mk",
@@ -47,7 +48,8 @@ char menuSel[MENU_SEL][MAX_FILE_NAME] = {"help",
                                          "exit",
                                          "clear",
                                          "modify",
-                                         "printGenerat"}; // 菜单索引
+                                         "printGenerat",
+                                         "findRelation"}; // 菜单索引
 
 /**
  * @description: printfColor
@@ -132,4 +134,5 @@ chbrotree *delAllTree(chbrotree *root);
 chbrotree *modify(chbrotree *root, char *name);
 void printCondition(chbrotree *root, char *name, char *direction, int generation);
 void transToAppellation(chbrotree *root, char *firstname, char *secondname);
+int difGeneration(chbrotree *root, chbrotree *firstPerson, chbrotree *secondPerson);
 #endif
