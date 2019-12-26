@@ -2,7 +2,7 @@
  * @description: Í·ÎÄ¼þ
  * @file: myhead.h
  * @author: LiuKai
- * @ver: 3.0 2019/12/21
+ * @ver: 4.0 2019/12/26
  **/
 #ifndef __MYHEAD_H__
 #define __MYHEAD_H__
@@ -125,14 +125,16 @@ chbrotree *load(chbrotree *root, char *fileName);
 bool save(chbrotree *root, char *fileName);
 chbrotree *idFindPerson(chbrotree *root, int id);
 chbrotree *nameFindPerson(chbrotree *root, char *name, int deepth);
+chbrotree *modify(chbrotree *root, char *name);
+chbrotree *addChildToFather(chbrotree *Father, chbrotree *Child);
 chbrotree *treeInput(chbrotree *root, info myinfo, char *relation, char *relationName);
+chbrotree *delAllTree(chbrotree *root);
 chbrotree *mallocTreeNode(chbrotree *node, info myinfo);
 void printTreeNode(chbrotree *root);
 void generationPrintTreeNode(chbrotree *root, int generation);
-chbrotree *addChildToFather(chbrotree *Father, chbrotree *Child);
-chbrotree *delAllTree(chbrotree *root);
-chbrotree *modify(chbrotree *root, char *name);
 void printCondition(chbrotree *root, char *name, char *direction, int generation);
-void transToAppellation(chbrotree *root, chbrotree *firstPerson, chbrotree *secondPerson);
+chbrotree *conGeneration(chbrotree *firstPerson, chbrotree *secondPerson);
+bool modifyRelation(chbrotree *p, int *idx, chbrotree *pSpouse, chbrotree *secondPerson);
 int difGeneration(chbrotree *root, chbrotree *firstPerson, chbrotree *secondPerson);
+void transToAppellation(chbrotree *root, chbrotree *firstPerson, chbrotree *secondPerson);
 #endif
