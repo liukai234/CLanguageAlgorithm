@@ -1070,26 +1070,319 @@ int difGeneration(chbrotree *root, chbrotree *firstPerson, chbrotree *secondPers
     printf("\n");
     return idx;
 }
-/* 
-void transToAppellation(chbrotree *root, char *firstname, char *secondname)
+
+/**
+ * @description: transToAppellation
+ * @author: LiuXiaoxia
+ * @param: chbrotree *root, chbrotree *firstPerson, chbrotree *secondPerson
+ * @return: void
+ * @ver: 1.0 2019/12/26
+ */
+void transToAppellation(chbrotree *root, chbrotree *firstPerson, chbrotree *secondPerson)
 {
-    int idx = difGeneration(root, firstname, secondname);
+    int idx = difGeneration(root, firstPerson, secondPerson);
     char appellation[MAX_FIND_DEEPTH][MAX_STRING];
-    char prefix[MAX_STRING];
-    int indexRel = 0;  // relaStr下标
-    int indexAppe = 0; // 二维下标
-    int top = 0;       // 栈顶
+    char prefix[MAX_STRING]; //前缀
+    int indexRel = 0;        // relaStr下标
+    int indexAppe = 0;       // 二维下标
+    int top = 0;             // 栈顶
     Relation relaStack[200];
-    printf("%s is %s's", firstname, secondname);
-    while(indexRel < idx)
+    printf("%s is %s's", firstPerson->myinfo.name, secondPerson->myinfo.name);
+    while (indexRel < idx)
     {
         strcat(relaStack[top++].name, rela[indexRel++].name);
-        if(top>=3 && !strcmp(relaStack[top].name, relaStack[top-3].name)){
-            top-=2;
+        if (top >= 3 && !strcmp(relaStack[top].name, relaStack[top - 3].name))
+        {
+            top -= 2;
         }
     }
-    
-     
 
+    int i = 0;
+    switch (relaStack[i++].relation)
+    {
+    case '\0': //relaStack为空
+        printf("self.\n");
+        break;
+    case 'p': //p
+        if (firstPerson->myinfo.sex == "male")
+            printf("wife.\n");
+        else
+            printf("husband.\n");
+        break;
+    case 's': //s
+        switch (relaStack[i++].relation)
+        {
+        case '\0':
+            printf("son.\n");
+            break;
+        case 'p': //sp
+            printf("son's wife.\n");
+            break;
+        case 's': //ss
+            switch (relaStack[i++].relation)
+            {
+            case '\0':
+                printf("grandson.\n");
+                break;
+            case 'p': //ssp
+                printf("grandson's wife.\n");
+                break;
+            default:
+                printf("distant relatives(Blood relationship is too far to query).\n");
+                break;
+            }
+            break;
+        case 'd': //sd
+            switch (relaStack[i++].relation)
+            {
+            case '\0':
+                printf("grandaughter.\n");
+                break;
+            case 'p': //sdp
+                printf("grandaughter's husband.\n");
+                break;
+            default:
+                printf("distant relatives(Blood relationship is too far to query).\n");
+                break;
+            }
+            break;
+        default:
+            printf("distant relatives(Blood relationship is too far to query).\n");
+            break;
+        }
+        break;
+    case 'd': //d
+        switch (relaStack[i++].relation)
+        {
+        case '\0':
+            printf("daughter.\n");
+            break;
+        case 'p': //dp
+            printf("daughter's husband.\n");
+            break;
+        default:
+            printf("distant relatives(Blood relationship is too far to query).\n");
+            break;
+        }
+        break;
+    case 'f': //f
+        switch (relaStack[i++].relation)
+        {
+        case '\0':
+            printf("father.\n");
+            break;
+        case 'p': //fp
+            printf("mother.\n");
+            break;
+        case 's': //fs
+            switch (relaStack[i++].relation)
+            {
+            case '\0':
+                printf("brother.\n");
+                break;
+            case 'p':
+                printf("brother's wife.\n");
+                break;
+            case 's': //fss
+                switch (relaStack[i++].relation)
+                {
+                case '\0':
+                    printf("nepew.\n");
+                    break;
+                case 'p': //fssp
+                    printf("nepew's wife.\n");
+                    break;
+                case 's': //fsss
+                    switch (relaStack[i++].relation)
+                    {
+                    case '\0':
+                        printf("nepew's son.\n");
+                        break;
+                    case 'p': //fsssp
+                        printf("nepew's son's wife.\n");
+                        break;
+                    default:
+                        printf("distant relatives(Blood relationship is too far to query).\n");
+                        break;
+                    }
+                    break;
+                case 'd': //fssd
+                    switch (relaStack[i++].relation)
+                    {
+                    case '\0':
+                        printf("nepew's daughter.\n");
+                        break;
+                    case 'p': //fssdp
+                        printf("nepew's daughter's husband.\n");
+                        break;
+                    default:
+                        printf("distant relatives(Blood relationship is too far to query).\n");
+                        break;
+                    }
+                    break;
+                default:
+                    printf("distant relatives(Blood relationship is too far to query).\n");
+                    break;
+                }
+                break;
+            case 'd': //fsd
+                switch (relaStack[i++].relation)
+                {
+                case '\0':
+                    printf("niece.\n");
+                    break;
+                case 'p': //fsdp
+                    printf("niece's husband.\n");
+                    break;
+                default:
+                    printf("distant relatives(Blood relationship is too far to query).\n");
+                    break;
+                }
+                break;
+            default:
+                printf("distant relatives(Blood relationship is too far to query).\n");
+                break;
+            }
+            break;
+        case 'd': //fd
+            switch (relaStack[i++].relation)
+            {
+            case '\0':
+                printf("sister.\n");
+                break;
+            case 'p': //fdp
+                printf("sister's husband.\n");
+                break;
+            }
+            break;
+        case 'f': //ff
+            switch (relaStack[i++].relation)
+            {
+            case '\0':
+                printf("grandfather.\n");
+                break;
+            case 'p': //ffp
+                printf("grandmother.\n");
+                break;
+            case 's': //ffs
+                switch (relaStack[i++].relation)
+                {
+                case '\0':
+                    printf("uncle.\n");
+                    break;
+                case 'p': //ffsp
+                    printf("aunt.\n");
+                    break;
+                case 's': //ffss
+                    switch (relaStack[i++].relation)
+                    {
+                    case '\0':
+                        printf("cousin.\n");
+                        break;
+                    case 'p': //ffssp
+                        printf("sister-in-law.\n");
+                        break;
+                    case 's': //ffsss
+                        switch (relaStack[i++].relation)
+                        {
+                        case '\0':
+                            printf("nepew.\n");
+                            break;
+                        case 'p': //ffsssp
+                            printf("nepew's wife.\n");
+                            break;
+                        case 's': //ffssss
+                            switch (relaStack[i++].relation)
+                            {
+                            case '\0':
+                                printf("nepew's son.\n");
+                                break;
+                            case 'p': //ffssssp
+                                printf("nepew's son's wife.\n");
+                                break;
+                            default:
+                                printf("distant relatives(Blood relationship is too far to query).\n");
+                                break;
+                            }
+                            break;
+                        case 'd': //ffsssd
+                            switch (relaStack[i++].relation)
+                            {
+                            case '\0':
+                                printf("nepew's daughter.\n");
+                                break;
+                            case 'p': //ffsssdp
+                                printf("nepew's daughter's husband.\n");
+                                break;
+                            default:
+                                printf("distant relatives(Blood relationship is too far to query).\n");
+                                break;
+                            }
+                            break;
+                        default:
+                            printf("distant relatives(Blood relationship is too far to query).\n");
+                            break;
+                        }
+                        break;
+                    case 'd': //ffssd
+                        switch (relaStack[i++].relation)
+                        {
+                        case '\0':
+                            printf("niece.\n");
+                            break;
+                        case 'p': //ffssdp
+                            printf("niece's husband.\n");
+                            break;
+                        default:
+                            printf("distant relatives(Blood relationship is too far to query).\n");
+                            break;
+                        }
+                        break;
+                    default:
+                        printf("distant relatives(Blood relationship is too far to query).\n");
+                        break;
+                    }
+                    break;
+                case 'd': //ffsd
+                    switch (relaStack[i++].relation)
+                    {
+                    case '\0':
+                        printf("cousin.\n");
+                        break;
+                    case 'p': //ffsdp
+                        printf("brother-in-law.\n");
+                        break;
+                    default:
+                        printf("distant relatives(Blood relationship is too far to query).\n");
+                        break;
+                    }
+                    break;
+                }
+                break;
+            case 'd': //ffd
+                switch (relaStack[i++].relation)
+                {
+                case '\0':
+                    printf("aunt.\n");
+                    break;
+                case 'p': //ffdp
+                    printf("uncle.\n");
+                    break;
+                default:
+                    printf("distant relatives(Blood relationship is too far to query).\n");
+                    break;
+                }
+                break;
+            }
+            break;
+        default:
+            printf("distant relatives(Blood relationship is too far to query).\n");
+            break;
+        }
+        break;
+    default:
+        printf("distant relatives(Blood relationship is too far to query).\n");
+        break;
+    }
     return;
-} */
+}
