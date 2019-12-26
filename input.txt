@@ -1,6 +1,2 @@
-treeInput non non name_a 2 3 4
-treeInput father name_a name_b 5 6 7
-treeInput father name_a name_c 8 9 10
 open test.dat
-printTreeNode
-clear y
+findRelation a c

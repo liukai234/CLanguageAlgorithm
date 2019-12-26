@@ -2,7 +2,7 @@
  * @description: 头文件
  * @file: myhead.h
  * @author: LiuKai
- * @ver: 3.0 2019/12/21
+ * @ver: 4.0 2019/12/26
  **/
 #ifndef __MYHEAD_H__
 #define __MYHEAD_H__
@@ -16,8 +16,9 @@
 
 #define MAX_FILE_NAME 100 // 文件名的长度
 #define MAX_STRING 100
-#define MENU_SEL 13       // 菜单长度宏
-#define MAX_FILE_NUM 1000 // 最大文件数量
+#define MENU_SEL 15         // 菜单长度宏
+#define MAX_FILE_NUM 1000   // 最大文件数量
+#define MAX_FIND_DEEPTH 100 // 最大查找深度
 
 #define MENU_PRINT 0
 #define LS 1
@@ -32,6 +33,8 @@
 #define EXIT 10
 #define CLEAR 11
 #define MODIFY 12
+#define GENERAT 13
+#define FIND_RELATION 14
 char menuSel[MENU_SEL][MAX_FILE_NAME] = {"help",
                                          "ls",
                                          "mk",
@@ -44,7 +47,9 @@ char menuSel[MENU_SEL][MAX_FILE_NAME] = {"help",
                                          "printTree",
                                          "exit",
                                          "clear",
-                                         "modify"}; // 菜单索引
+                                         "modify",
+                                         "printGenerat",
+                                         "findRelation"}; // 菜单索引
 
 /**
  * @description: printfColor
@@ -101,7 +106,7 @@ typedef struct chbrotree0
 {
     info myinfo;
     struct chbrotree0 *myfather;
-    struct chbrotree0 *firstchild; //第一个后代
+    struct chbrotree0 *firstchild;   //第一个后代
     struct chbrotree0 *rightsibling; //自己的兄弟
 } chbrotree;
 
@@ -119,12 +124,17 @@ void mk(char *inputFileName);
 chbrotree *load(chbrotree *root, char *fileName);
 bool save(chbrotree *root, char *fileName);
 chbrotree *idFindPerson(chbrotree *root, int id);
-chbrotree *nameFindPerson(chbrotree *root, char *name);
+chbrotree *nameFindPerson(chbrotree *root, char *name, int deepth);
+chbrotree *modify(chbrotree *root, char *name);
+chbrotree *addChildToFather(chbrotree *Father, chbrotree *Child);
 chbrotree *treeInput(chbrotree *root, info myinfo, char *relation, char *relationName);
+chbrotree *delAllTree(chbrotree *root);
 chbrotree *mallocTreeNode(chbrotree *node, info myinfo);
 void printTreeNode(chbrotree *root);
 void generationPrintTreeNode(chbrotree *root, int generation);
-void addChildToFather(chbrotree *Father, chbrotree *Child);
-chbrotree *delAllTree(chbrotree *root);
-chbrotree *modify(chbrotree*root, char *name);
+void printCondition(chbrotree *root, char *name, char *direction, int generation);
+chbrotree *conGeneration(chbrotree *firstPerson, chbrotree *secondPerson);
+bool modifyRelation(chbrotree *p, int *idx, chbrotree *pSpouse, chbrotree *secondPerson);
+int difGeneration(chbrotree *root, chbrotree *firstPerson, chbrotree *secondPerson);
+void transToAppellation(chbrotree *root, chbrotree *firstPerson, chbrotree *secondPerson);
 #endif
