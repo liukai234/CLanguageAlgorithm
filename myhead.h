@@ -133,6 +133,6 @@ chbrotree *addChildToFather(chbrotree *Father, chbrotree *Child);
 chbrotree *delAllTree(chbrotree *root);
 chbrotree *modify(chbrotree *root, char *name);
 void printCondition(chbrotree *root, char *name, char *direction, int generation);
-void transToAppellation(chbrotree *root, char *firstname, char *secondname);
+void transToAppellation(chbrotree *root, chbrotree *firstPerson, chbrotree *secondPerson);
 int difGeneration(chbrotree *root, chbrotree *firstPerson, chbrotree *secondPerson);
 #endif

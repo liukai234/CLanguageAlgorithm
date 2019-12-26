@@ -316,7 +316,8 @@ int main(int args, char *argv[])
             scanf("%s%s", firstName, secondName);
             chbrotree *firstPerson = nameFindPerson(mychbrotree, firstName, MAX_FIND_DEEPTH);
             chbrotree *secondPerson = nameFindPerson(mychbrotree, secondName, MAX_FIND_DEEPTH);
-            difGeneration(mychbrotree, firstPerson, secondPerson);
+            // int idx = difGeneration(mychbrotree, firstPerson, secondPerson);
+            transToAppellation(mychbrotree, firstPerson, secondPerson);
             break;
         case EXIT:
             exitFlag = true;
@@ -937,11 +938,11 @@ Relation rela[200];
 /**
  * @description: modifyRelation
  * @author: LiuXiaoxia
- * @param: chbrotree *p, int *idx, chbrotree *pp, chbrotree *secondPerson
+ * @param: chbrotree *p, int *idx, chbrotree *pSpouse, chbrotree *secondPerson
  * @return: bool
  * @ver: 1.0 2019/12/25
  */
-bool modifyRelation(chbrotree *p, int *idx, chbrotree *pp, chbrotree *secondPerson)
+bool modifyRelation(chbrotree *p, int *idx, chbrotree *pSpouse, chbrotree *secondPerson)
 {
     // int id = *idx;
     if (p->myinfo.sex == "male")
@@ -955,12 +956,12 @@ bool modifyRelation(chbrotree *p, int *idx, chbrotree *pp, chbrotree *secondPers
         strcpy(rela[(*idx)++].name, p->myinfo.name);
     }
 
-    if (pp)
+    if (pSpouse)
     {
-        if (pp->myinfo.sex != secondPerson->myinfo.sex)
+        if (pSpouse->myinfo.sex != secondPerson->myinfo.sex)
         {
             rela[*idx].relation = 'p'; //p为配偶
-            strcpy(rela[(*idx)++].name, pp->myinfo.name);
+            strcpy(rela[(*idx)++].name, pSpouse->myinfo.name);
         }
         return true;
     }
@@ -1068,6 +1069,7 @@ int difGeneration(chbrotree *root, chbrotree *firstPerson, chbrotree *secondPers
         printf("%c", rela[i].relation);
     }
     printf("\n");
+
     return idx;
 }
 
@@ -1087,14 +1089,17 @@ void transToAppellation(chbrotree *root, chbrotree *firstPerson, chbrotree *seco
     int indexAppe = 0;       // 二维下标
     int top = 0;             // 栈顶
     Relation relaStack[200];
-    printf("%s is %s's", firstPerson->myinfo.name, secondPerson->myinfo.name);
-    while (indexRel < idx)
+
+    printf("%s is %s's ", firstPerson->myinfo.name, secondPerson->myinfo.name);
+    for (; indexRel < idx; indexRel ++)
     {
-        strcat(relaStack[top++].name, rela[indexRel++].name);
+        strcpy(relaStack[top].name, rela[indexRel].name);
+        relaStack[top++].relation = rela[indexRel].relation;
         if (top >= 3 && !strcmp(relaStack[top].name, relaStack[top - 3].name))
         {
             top -= 2;
         }
+        // relaStack[indexRel]  = rela[indexRel];
     }
 
     int i = 0;
