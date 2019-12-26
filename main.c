@@ -906,7 +906,7 @@ struct Relation
  * @return: bool
  * @ver: 1.0 2019/12/25
  */
-bool modifyRelation  (chbrotree *p, int *idx, chbrotree *pp, chbrotree *secondPerson)
+bool modifyRelation (chbrotree *p, int *idx, chbrotree *pp, chbrotree *secondPerson)
 {
     int id = idx;
     if (p->myinfo.sex == "male")
@@ -1014,6 +1014,7 @@ int difGeneration (chbrotree *root, char *firstName, char *secondName)
     }
     return --idx;
 }
+
 void transToAppellation(char *relationStr)
 {
     char appellation[MAX_FIND_DEEPTH][MAX_STRING];
