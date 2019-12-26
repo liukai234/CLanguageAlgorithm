@@ -909,7 +909,7 @@ struct Relation
  * @return: bool
  * @ver: 1.0 2019/12/25
  */
-bool modifyRelation  (chbrotree *p, int *idx, chbrotree *pp, chbrotree *secondPerson)
+bool modifyRelation(chbrotree *p, int *idx, chbrotree *pp, chbrotree *secondPerson)
 {
     int id = idx;
     if (p->myinfo.sex == "male")
@@ -1017,13 +1017,14 @@ int difGeneration (chbrotree *root, char *firstName, char *secondName)
     }
     return --idx;
 }
-void transToAppellation(char *relationStr)
+
+void transToAppellation()
 {
     char appellation[MAX_FIND_DEEPTH][MAX_STRING];
     char prefix[MAX_STRING];
-    int indexStr = 0; // relationStr下标
+    int indexStr = 0; // relaStr下标
     int top = 0;      // 栈顶
-    for (indexStr = 0; relationStr[indexStr] != '\''; indexStr++)
+    for (indexStr = 0; rela[indexStr] != '\''; indexStr++)
     {
         prefix[indexStr] = relationStr[indexStr];
     }
