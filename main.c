@@ -537,7 +537,7 @@ chbrotree *nameFindPerson(chbrotree *root, char *name, int deepth)
         p = pre;
         while (p)
         {
-            if (!strcmp(p->myinfo.name, name))
+            if (!strcmp(p->myinfo.name, name) || !strcmp(p->myinfo.spouse, name))
             {
                 address[index] = p;
                 index++;
@@ -634,7 +634,6 @@ chbrotree *treeInput(chbrotree *root, info myinfo, char *relation, char *relatio
     }
 
     chbrotree *pre = nameFindPerson(root, relationName, MAX_FIND_DEEPTH);
-
     if (pre == NULL)
     {
         PRINT_FONT_RED
@@ -642,53 +641,63 @@ chbrotree *treeInput(chbrotree *root, info myinfo, char *relation, char *relatio
         PRINT_ATTR_REC
         return root;
     }
-    if (!strcmp(relation, "father") || !strcmp(relation, "mother"))
+    if (!strcmp(pre->myinfo.sex, "male"))
     {
-        pre = addChildToFather(pre, node);
-    }
-    else if (!strcmp(relation, "uncle") || !strcmp(relation, "aunt"))
-    {
-        chbrotree *newfather = pre->myfather;
-        generationPrintTreeNode(newfather->firstchild, 1);
-        //根据输出的信息找到myinfo的父亲的ID并输入
-        int myinfoFatherID;
-        scanf("%d", &myinfoFatherID);
-        chbrotree *p = idFindPerson(newfather->firstchild, myinfoFatherID);
-        p = addChildToFather(p, node);
-    }
-    else if (!strcmp(relation, "grandfather") || !strcmp(relation, "grandmother"))
-    {
-        generationPrintTreeNode(pre->firstchild, 1);
-        //根据输出的信息找到myinfo的父亲的ID并输入
-        int myinfoFatherID;
-        scanf("%d", &myinfoFatherID);
-        chbrotree *p = idFindPerson(pre->firstchild, myinfoFatherID);
-        p = addChildToFather(p, node);
-    }
-    else if (!strcmp(relation, "son") || !strcmp(relation, "daughter"))
-    {
-        if (pre->myfather == NULL)
+        if (!strcmp(relation, "father") || !strcmp(relation, "mother"))
         {
-            pre->myfather = node;
-            strcpy(node->myinfo.father, "null");
-            strcpy(pre->myinfo.father, node->myinfo.name);
-            node->firstchild = pre;
-            root = node;
+
+            pre = addChildToFather(pre, node);
         }
-        else
+        else if (!strcmp(relation, "uncle") || !strcmp(relation, "aunt"))
         {
-            pre = pre->myfather;
+            chbrotree *newfather = pre->myfather;
+            generationPrintTreeNode(newfather->firstchild, 1);
+            //根据输出的信息找到myinfo的父亲的ID并输入
+            int myinfoFatherID;
+            scanf("%d", &myinfoFatherID);
+            chbrotree *p = idFindPerson(newfather->firstchild, myinfoFatherID);
+            p = addChildToFather(p, node);
+        }
+        else if (!strcmp(relation, "grandfather") || !strcmp(relation, "grandmother"))
+        {
+            generationPrintTreeNode(pre->firstchild, 1);
+            //根据输出的信息找到myinfo的父亲的ID并输入
+            int myinfoFatherID;
+            scanf("%d", &myinfoFatherID);
+            chbrotree *p = idFindPerson(pre->firstchild, myinfoFatherID);
+            p = addChildToFather(p, node);
+        }
+        else if (!strcmp(relation, "son") || !strcmp(relation, "daughter"))
+        {
             if (pre->myfather == NULL)
             {
-                pre =  addChildToFather(pre, node);
+                pre->myfather = node;
+                strcpy(node->myinfo.father, "null");
+                strcpy(pre->myinfo.father, node->myinfo.name);
+                node->firstchild = pre;
+                root = node;
+            }
+            else
+            {
+                pre = pre->myfather;
+                if (pre->myfather == NULL)
+                {
+                    pre = addChildToFather(pre, node);
+                }
             }
         }
+        else if (!strcmp(relation, "grandson") || !strcmp(relation, "granddaughter"))
+        {
+            chbrotree *newfather = pre->myfather->myfather->myfather;
+            newfather = addChildToFather(newfather, node);
+            node = addChildToFather(node, pre->myfather);
+        }
     }
-    else if (!strcmp(relation, "grandson") || !strcmp(relation, "granddaughter"))
+    else
     {
-        chbrotree *newfather = pre->myfather->myfather->myfather;
-        newfather = addChildToFather(newfather, node);
-        node = addChildToFather(node, pre->myfather);
+        PRINT_FONT_RED
+        printf("Female offspring are not allowed to enter the genealogy\n");
+        PRINT_ATTR_REC
     }
     return root;
 }
@@ -1065,7 +1074,8 @@ int difGeneration(chbrotree *root, chbrotree *firstPerson, chbrotree *secondPers
         break;
     }
     // testProject
-    for(int i = 0; i < idx; i++){
+    for (int i = 0; i < idx; i++)
+    {
         printf("%c", rela[i].relation);
     }
     printf("\n");
@@ -1091,7 +1101,7 @@ void transToAppellation(chbrotree *root, chbrotree *firstPerson, chbrotree *seco
     Relation relaStack[200];
 
     printf("%s is %s's ", firstPerson->myinfo.name, secondPerson->myinfo.name);
-    for (; indexRel < idx; indexRel ++)
+    for (; indexRel < idx; indexRel++)
     {
         strcpy(relaStack[top].name, rela[indexRel].name);
         relaStack[top++].relation = rela[indexRel].relation;
