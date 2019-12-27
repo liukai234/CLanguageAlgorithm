@@ -1,2 +1,10 @@
 open test.dat
-findRelation a c
+input null null a male 1900 a_spouse
+input father a b male 1920 b_spouse
+input father a c male 1922 c_spouse
+input father b d male 1940 d_spouse
+input father b e female 1942 e_spouse
+input father c f female 1960 f_spouse
+input father c g male 1962 g_spouse
+input father d h male 1980 h_spouse
+input father g i male 1982 i_spouse

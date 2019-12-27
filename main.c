@@ -165,6 +165,7 @@ int main(int args, char *argv[])
                 printf("No file is opening\n");
                 PRINT_ATTR_REC
             }
+            ID = 0; // 将id恢复, 准备下一次计数
             break;
         case DEL:
             // del
@@ -223,7 +224,7 @@ int main(int args, char *argv[])
             if (fileOpenFlag)
             {
                 scanf("%d", &IdFind);
-                idFindPerson(mychbrotree, IdFind);
+                idFindWithLevelOrder(mychbrotree, IdFind);
             }
             else
             {
@@ -236,7 +237,7 @@ int main(int args, char *argv[])
             if (fileOpenFlag)
             {
                 scanf("%s", firstName);
-                if (!nameFindPerson(mychbrotree, firstName, MAX_FIND_DEEPTH))
+                if (!nameFindWithLevelOrder(mychbrotree, firstName, MAX_FIND_DEEPTH))
                 {
                     PRINT_FONT_RED
                     printf("Not fount\n");
@@ -313,9 +314,9 @@ int main(int args, char *argv[])
             }
             break;
         case FIND_RELATION:
-            scanf("%s%s", firstName, secondName);
-            chbrotree *firstPerson = nameFindPerson(mychbrotree, firstName, MAX_FIND_DEEPTH);
-            chbrotree *secondPerson = nameFindPerson(mychbrotree, secondName, MAX_FIND_DEEPTH);
+            scanf("%s%s", secondName, firstName);
+            chbrotree *firstPerson = nameFindWithLevelOrder(mychbrotree, firstName, MAX_FIND_DEEPTH);
+            chbrotree *secondPerson = nameFindWithLevelOrder(mychbrotree, secondName, MAX_FIND_DEEPTH);
             transToAppellation(mychbrotree, firstPerson, secondPerson);
             break;
         case EXIT:
@@ -362,22 +363,22 @@ int main(int args, char *argv[])
  */
 void menuPrint()
 {
-    printf("help             format: help\n"
-           "ls               format: ls\n"
-           "mk               format: mk [*.dat]\n"
-           "open             format: open [*.dat]\n"
-           "save and close   format: close\n"
-           "load             format: laod [*.dat]\n"
-           "del              format: del [*.dat]\n"
-           "clear all date   format: clear\n"
-           "idFindPerson     format: idFindPerson [id]\n"
-           "nameFindPerson   format: nameFindPerson [name]\n"
-           "modify           format: modify [searchName]\n"
-           "treeInput        format: input [relation][relationName][name][sex][birth][spouse]\n"
-           "printTreeNode    format: printTree\n"
-           "printGenerat     format: printGenert [name][after] or printGenert [name][before][generat]\n"
-           "findRelation     format: findRelation [name1][name2]\n"
-           "exit             format: exit\n");
+    printf("help                     format: help\n"
+           "ls                       format: ls\n"
+           "mk                       format: mk [*.dat]\n"
+           "open                     format: open [*.dat]\n"
+           "save and close           format: close\n"
+           "load                     format: laod [*.dat]\n"
+           "del                      format: del [*.dat]\n"
+           "clear all date           format: clear\n"
+           "idFindWithLevelOrder     format: idFindWithLevelOrder [id]\n"
+           "nameFindWithLevelOrder   format: nameFindWithLevelOrder [name]\n"
+           "modify                   format: modify [searchName]\n"
+           "treeInput                format: input [relation][relationName][name][sex][birth][spouse]\n"
+           "printTreeNode            format: printTree\n"
+           "printGenerat             format: printGenert [name][after] or printGenert [name][before][generat]\n"
+           "findRelation             format: findRelation [name1][name2]\n"
+           "exit                     format: exit\n");
 }
 
 /**
@@ -465,7 +466,10 @@ chbrotree *load(chbrotree *root, char *fileName)
 bool save(chbrotree *root, char *fileName)
 {
     FILE *output;
-    chbrotree *p, *pre;
+    chbrotree *p;
+    chbrotree *queue[MAX_PERSON_NUM];
+    int front = 0, rear = 1;
+    queue[0] = root;
     output = fopen(fileName, "wb");
     if (!output)
     {
@@ -474,29 +478,63 @@ bool save(chbrotree *root, char *fileName)
         PRINT_ATTR_REC
         return false;
     }
-    pre = root;
-    while (pre)
+    while (front < rear)
     {
-        p = pre;
-        while (p)
+        p = queue[front++];
+        fwrite(p, sizeof(struct chbrotree0), 1, output);
+        if (p->firstchild)
         {
-            fwrite(p, sizeof(struct chbrotree0), 1, output);
-            p = p->rightsibling;
+            p = p->firstchild;
+            chbrotree *pre = p;
+            while (pre)
+            {
+                queue[rear++] = pre;
+                pre = pre->rightsibling;
+            }
         }
-        pre = pre->firstchild;
     }
     fclose(output);
     return true;
 }
 
 /**
- * @description: findPerson
+ * @description: idFindWithLevelOrder
  * @author: LiuKai
  * @param: chbrotree *root, int id
  * @return: chbrotree *root
- * @ver: 1.0 2019/12/20
+ * @ver: 2.0 2019/12/27
  */
-chbrotree *idFindPerson(chbrotree *root, int id)
+chbrotree *idFindWithLevelOrder(chbrotree *root, int id)
+{
+    chbrotree *queue[MAX_PERSON_NUM];
+    int front = 0, rear = 1, i;
+    chbrotree *p;
+    queue[0] = root;
+    while (front < rear)
+    {
+        p = queue[front++];
+        if (p->myinfo.id == id)
+            return p;
+        // testGroup
+        /* printf("idtest>>>\n");
+        printf("|%-10s|%-10d|%-10s|%-10s|%-10s|%-10s|\n", p->myinfo.name, p->myinfo.id, p->myinfo.sex,
+               p->myinfo.birth, p->myinfo.father, p->myinfo.spouse);
+        printf("+----------+----------+----------+----------+----------+----------+\n"); */
+
+        if (p->firstchild)
+        {
+            p = p->firstchild;
+            chbrotree *pre = p;
+            while (pre)
+            {
+                queue[rear++] = pre;
+                pre = pre->rightsibling;
+            }
+        }
+    }
+    return NULL;
+}
+/* chbrotree *idFindWithLevelOrder(chbrotree *root, int id)
 {
     chbrotree *p, *pre;
     pre = root;
@@ -514,18 +552,77 @@ chbrotree *idFindPerson(chbrotree *root, int id)
         pre = pre->firstchild;
     }
     return NULL;
-}
+} */
 
 /**
- * @description: findPerson
+ * @description: nameFindWithLevelOrder
  * @author: LiuKai
  * @param: chbrotree *root, char *name, int deepth (deepth参数表示查找深度)
  * 当查找深度deepth设置为MAX_FIND_DEEPTH时默认为最大深度
  * @return: chbrotree *root
- * @ver: 1.0 2019/12/20
+ * @ver: 2.0 2019/12/27
  */
-// ！！！查找配偶
-chbrotree *nameFindPerson(chbrotree *root, char *name, int deepth)
+chbrotree *nameFindWithLevelOrder(chbrotree *root, char *name, int deep)
+{
+    chbrotree *queue[MAX_PERSON_NUM];
+    chbrotree *address[MAX_STRING];
+    int front = 0, rear = 1, index = 0;
+    chbrotree *p;
+    queue[0] = root;
+    while (front < rear)
+    {
+        p = queue[front++];
+        if (!strcmp(p->myinfo.name, name) || !strcmp(p->myinfo.spouse, name))
+        {
+            address[index++] = p;
+        }
+        // testGroup
+        /* printf("testName>>>\n");
+        printf("|%-10s|%-10d|%-10s|%-10s|%-10s|%-10s|\n", p->myinfo.name, p->myinfo.id, p->myinfo.sex,
+               p->myinfo.birth, p->myinfo.father, p->myinfo.spouse);
+        printf("+----------+----------+----------+----------+----------+----------+\n"); */
+
+        if (p->firstchild)
+        {
+            p = p->firstchild;
+            chbrotree *pre = p;
+            while (pre)
+            {
+                queue[rear++] = pre;
+                pre = pre->rightsibling;
+            }
+        }
+    }
+    if (index == 1)
+    {
+        return address[0];
+    }
+    else if (index > 1)
+    {
+        // 调用条件输出
+        printf("+----------+----------+----------+----------+----------+----------+\n"
+               "|Name      |ID        |Sex       |Birth     |Father    |Spouse    |\n"
+               "+----------+----------+----------+----------+----------+----------+\n");
+        for (int i = 0; i < index; i++)
+        {
+            printf("|%-10s|%-10d|%-10s|%-10s|%-10s|%-10s|\n", address[i]->myinfo.name, address[i]->myinfo.id, address[i]->myinfo.sex,
+                   address[i]->myinfo.birth, address[i]->myinfo.father, address[i]->myinfo.spouse);
+            printf("+----------+----------+----------+----------+----------+----------+\n");
+        }
+        printf("Input id to find:\n");
+        int myIdFind;
+        scanf("%d", &myIdFind);
+        for (int i = 0; i < index; i++)
+        {
+            if (address[i]->myinfo.id == myIdFind)
+            {
+                return address[i];
+            }
+        }
+    }
+    return NULL;
+}
+/* chbrotree *nameFindWithLevelOrder(chbrotree *root, char *name, int deepth)
 {
     chbrotree *p, *pre;
     chbrotree *address[MAX_STRING];
@@ -573,14 +670,14 @@ chbrotree *nameFindPerson(chbrotree *root, char *name, int deepth)
         }
     }
     return NULL;
-}
+} */
 
 chbrotree *modify(chbrotree *root, char *name)
 {
     info myinfo;
     printf("enter the name to modify:\n");
     chbrotree *p;
-    p = nameFindPerson(root, name, MAX_FIND_DEEPTH);
+    p = nameFindWithLevelOrder(root, name, MAX_FIND_DEEPTH);
     if (p == NULL)
     {
         printf("ERROR!This person doesn't exist in the family tree!");
@@ -632,7 +729,7 @@ chbrotree *treeInput(chbrotree *root, info myinfo, char *relation, char *relatio
         return root;
     }
 
-    chbrotree *pre = nameFindPerson(root, relationName, MAX_FIND_DEEPTH);
+    chbrotree *pre = nameFindWithLevelOrder(root, relationName, MAX_FIND_DEEPTH);
     if (pre == NULL)
     {
         PRINT_FONT_RED
@@ -650,20 +747,23 @@ chbrotree *treeInput(chbrotree *root, info myinfo, char *relation, char *relatio
         else if (!strcmp(relation, "uncle") || !strcmp(relation, "aunt"))
         {
             chbrotree *newfather = pre->myfather;
-            generationPrintTreeNode(newfather->firstchild, 1);
+            printCondition(newfather->firstchild, newfather->firstchild->myinfo.name, "after", 1);
+            // generationPrintTreeNode(newfather->firstchild, 1);
             //根据输出的信息找到myinfo的父亲的ID并输入
             int myinfoFatherID;
             scanf("%d", &myinfoFatherID);
-            chbrotree *p = idFindPerson(newfather->firstchild, myinfoFatherID);
+            chbrotree *p = idFindWithLevelOrder(newfather->firstchild, myinfoFatherID);
             p = addChildToFather(p, node);
         }
         else if (!strcmp(relation, "grandfather") || !strcmp(relation, "grandmother"))
         {
-            generationPrintTreeNode(pre->firstchild, 1);
-            //根据输出的信息找到myinfo的父亲的ID并输入
+            printCondition(pre->firstchild, pre->firstchild->myinfo.name, "after", 1);
+
+            // generationPrintTreeNode(pre->firstchild, 1);
+            // 根据输出的信息找到myinfo的父亲的ID并输入
             int myinfoFatherID;
             scanf("%d", &myinfoFatherID);
-            chbrotree *p = idFindPerson(pre->firstchild, myinfoFatherID);
+            chbrotree *p = idFindWithLevelOrder(pre->firstchild, myinfoFatherID);
             p = addChildToFather(p, node);
         }
         else if (!strcmp(relation, "son") || !strcmp(relation, "daughter"))
@@ -702,7 +802,7 @@ chbrotree *treeInput(chbrotree *root, info myinfo, char *relation, char *relatio
 }
 
 /**
- * @description: 释放除头结点外的所有节点的内存
+ * @description: 释放所有节点的内存
  * @autor: liuXiaoxia
  * @param {type}
  * @return: head;
@@ -747,17 +847,6 @@ chbrotree *mallocTreeNode(chbrotree *node, info myinfo)
 void printTreeNode(chbrotree *root)
 {
     int rowTotal = 0;
-    /*     if (root == NULL)
-    {
-        return NULL;
-    } */
-    // 对父节点标红
-    // linkStack mystack;
-    /* if (colorCount == 0)
-    {
-        PRINT_FONT_RED
-    }
-    colorCount ++; */
     // 设计输出表格
     /*
     +---------+----------+--------+-------+----------+
@@ -768,14 +857,14 @@ void printTreeNode(chbrotree *root)
     1 rows in table
     */
     /* printf("%s %d %s %s %s\n", root->myinfo.name, root->myinfo.id, root->myinfo.sex, root->myinfo.birth, root->myinfo.spouse);
-    printTreeNode(root->rightsibling);
-    // PRINT_FONT_RED
-    printTreeNode(root->firstchild); */
+    */
     // 将代码改为非递归形式
-    chbrotree *p, *pre;
+    chbrotree *queue[MAX_PERSON_NUM];
+    int front = 0, rear = 1, i;
+    chbrotree *p;
+    queue[0] = root;
     clock_t start, end;
     float timing = 0.0;
-    pre = root;
     start = clock();
     PRINT_FONT_RED
     printf(">>>\n");
@@ -783,18 +872,23 @@ void printTreeNode(chbrotree *root)
     printf("+----------+----------+----------+----------+----------+----------+\n"
            "|Name      |ID        |Sex       |Birth     |Father    |Spouse    |\n"
            "+----------+----------+----------+----------+----------+----------+\n");
-    while (pre)
+    while (front < rear)
     {
-        p = pre;
-        while (p)
+        p = queue[front++];
+        printf("|%-10s|%-10d|%-10s|%-10s|%-10s|%-10s|\n", p->myinfo.name, p->myinfo.id, p->myinfo.sex,
+               p->myinfo.birth, p->myinfo.father, p->myinfo.spouse);
+        printf("+----------+----------+----------+----------+----------+----------+\n");
+
+        if (p->firstchild)
         {
-            printf("|%-10s|%-10d|%-10s|%-10s|%-10s|%-10s|\n", p->myinfo.name, p->myinfo.id, p->myinfo.sex,
-                   p->myinfo.birth, p->myinfo.father, p->myinfo.spouse);
-            printf("+----------+----------+----------+----------+----------+----------+\n");
-            rowTotal++;
-            p = p->rightsibling;
+            p = p->firstchild;
+            chbrotree *pre = p;
+            while (pre)
+            {
+                queue[rear++] = pre;
+                pre = pre->rightsibling;
+            }
         }
-        pre = pre->firstchild;
     }
     end = clock();
     timing = (float)(end - start) / CLOCKS_PER_SEC;
@@ -802,13 +896,13 @@ void printTreeNode(chbrotree *root)
 }
 
 /**
- * @description: generationPrintTreeNode
+ * @description: generationPrintTreeNode(已弃用)
  * @author: LiuXiaoxia
  * @param: chbrotree *root, int generation
  * @return: void
  * @ver: 1.0 2019/12/24
  */
-void generationPrintTreeNode(chbrotree *root, int generation)
+/* void generationPrintTreeNode(chbrotree *root, int generation)
 {
     int rowTotal = 0;
     chbrotree *p, *pre;
@@ -840,7 +934,7 @@ void generationPrintTreeNode(chbrotree *root, int generation)
     timing = (float)(end - start) / CLOCKS_PER_SEC;
     printf("%d rows in table <%.2f sec>\n", rowTotal, timing);
 }
-
+ */
 // add printcondition
 /**
  * @description: printCondition
@@ -851,10 +945,14 @@ void generationPrintTreeNode(chbrotree *root, int generation)
  */
 void printCondition(chbrotree *root, char *name, char *direction, int generation)
 {
-    int i = 0;
-    generation++;
+    int highLight = true;
+    if (!strcmp(direction, "after"))
+    {
+        generation = 1;
+    }
+    // generation++;
     bool moveDown = true;
-    chbrotree *pre = nameFindPerson(root, name, MAX_FIND_DEEPTH);
+    chbrotree *pre = nameFindWithLevelOrder(root, name, MAX_FIND_DEEPTH);
     if (pre == NULL)
     {
         PRINT_FONT_RED
@@ -867,19 +965,37 @@ void printCondition(chbrotree *root, char *name, char *direction, int generation
     printf("+----------+----------+----------+----------+----------+----------+\n"
            "|Name      |ID        |Sex       |Birth     |Father    |Spouse    |\n"
            "+----------+----------+----------+----------+----------+----------+\n");
+    if (!strcmp("before", direction))
+    {
+        // 向前查找时包含自身
+        generation++;
+    }
     while (generation && pre != NULL)
     {
+        // if (!strcmp("before", direction) || !strcmp("after", direction) && !moveDown)
+        // {
+        if (highLight)
+            PRINT_FONT_RED
         printf("|%-10s|%-10d|%-10s|%-10s|%-10s|%-10s|\n", pre->myinfo.name, pre->myinfo.id, pre->myinfo.sex,
                pre->myinfo.birth, pre->myinfo.father, pre->myinfo.spouse);
+        if (highLight)
+            PRINT_ATTR_REC
+        highLight = false;
         printf("+----------+----------+----------+----------+----------+----------+\n");
+        // }
         if (!strcmp("after", direction))
         {
             if (moveDown)
+            {
                 pre = pre->firstchild;
-            moveDown = false;
-            pre = pre->rightsibling;
+                moveDown = false;
+            }
+            else
+            {
+                pre = pre->rightsibling;
+            }
         }
-        else if (!strcmp("before", direction))
+        if (!strcmp("before", direction))
         {
             pre = pre->myfather;
             generation--;
@@ -948,12 +1064,12 @@ bool modifyRelation(chbrotree *p, int *idx, chbrotree *pSpouse, chbrotree *secon
     // int id = *idx;
     if (p->myinfo.sex == "male")
     {
-        rela[*idx].relation = 's';
+        rela[*idx].relation = 'd'; // 改前为s
         strcpy(rela[(*idx)++].name, p->myinfo.name);
     }
     else
     {
-        rela[*idx].relation = 'd';
+        rela[*idx].relation = 's'; // 改前为d
         strcpy(rela[(*idx)++].name, p->myinfo.name);
     }
 
@@ -978,8 +1094,8 @@ bool modifyRelation(chbrotree *p, int *idx, chbrotree *pSpouse, chbrotree *secon
  */
 int difGeneration(chbrotree *root, chbrotree *firstPerson, chbrotree *secondPerson)
 {
-    // chbrotree *firstPerson = nameFindPerson(root, firstName, MAX_FIND_DEEPTH);
-    // chbrotree *secondPerson = nameFindPerson(root, secondName, MAX_FIND_DEEPTH);
+    // chbrotree *firstPerson = nameFindWithLevelOrder(root, firstName, MAX_FIND_DEEPTH);
+    // chbrotree *secondPerson = nameFindWithLevelOrder(root, secondName, MAX_FIND_DEEPTH);
     //char firstSex[100], secondSex[100];
     //isSpouse(firstSex, firstPerson, firstName);
     //isSpouse(secondSex, secondPerson, secondName);
@@ -1092,7 +1208,7 @@ void transToAppellation(chbrotree *root, chbrotree *firstPerson, chbrotree *seco
     int top = 0;             // 栈顶
     Relation relaStack[200];
 
-    printf("%s is %s's ", firstPerson->myinfo.name, secondPerson->myinfo.name);
+    printf("%s is %s's ", secondPerson->myinfo.name, firstPerson->myinfo.name);
     for (; indexRel < idx; indexRel++)
     {
         strcpy(relaStack[top].name, rela[indexRel].name);

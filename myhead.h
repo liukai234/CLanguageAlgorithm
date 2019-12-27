@@ -118,7 +118,6 @@ typedef struct linkQueue0
     struct linkQueue0 *next;
 } linkQueue;
 
-
 typedef struct Relation0
 {
     char relation;
@@ -126,15 +125,16 @@ typedef struct Relation0
 } Relation;
 Relation rela[MAX_PERSON_NUM];
 
-
 // Ç°ÏòÉùÃ÷¿é
 void menuPrint();
 int ls(char *path);
 void mk(char *inputFileName);
 chbrotree *load(chbrotree *root, char *fileName);
 bool save(chbrotree *root, char *fileName);
-chbrotree *idFindPerson(chbrotree *root, int id);
-chbrotree *nameFindPerson(chbrotree *root, char *name, int deepth);
+// chbrotree *idFindPerson(chbrotree *root, int id);
+chbrotree *idFindWithLevelOrder(chbrotree *root, int id);
+// chbrotree *nameFindPerson(chbrotree *root, char *name, int deepth);
+chbrotree *nameFindWithLevelOrder(chbrotree *root, char *name, int deep);
 chbrotree *modify(chbrotree *root, char *name);
 chbrotree *addChildToFather(chbrotree *Father, chbrotree *Child);
 chbrotree *treeInput(chbrotree *root, info myinfo, char *relation, char *relationName);
