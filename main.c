@@ -314,7 +314,7 @@ int main(int args, char *argv[])
             }
             break;
         case FIND_RELATION:
-            scanf("%s%s", secondName, firstName);
+            scanf("%s%s", firstName, secondName);
             chbrotree *firstPerson = nameFindWithLevelOrder(mychbrotree, firstName, MAX_FIND_DEEPTH);
             chbrotree *secondPerson = nameFindWithLevelOrder(mychbrotree, secondName, MAX_FIND_DEEPTH);
             transToAppellation(mychbrotree, firstPerson, secondPerson);
@@ -1064,12 +1064,12 @@ bool modifyRelation(chbrotree *p, int *idx, chbrotree *pSpouse, chbrotree *secon
     // int id = *idx;
     if (p->myinfo.sex == "male")
     {
-        rela[*idx].relation = 'd'; // 改前为s
+        rela[*idx].relation = 's';
         strcpy(rela[(*idx)++].name, p->myinfo.name);
     }
     else
     {
-        rela[*idx].relation = 's'; // 改前为d
+        rela[*idx].relation = 'd';
         strcpy(rela[(*idx)++].name, p->myinfo.name);
     }
 
