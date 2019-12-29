@@ -1062,7 +1062,7 @@ chbrotree *conGeneration(chbrotree *firstPerson, chbrotree *secondPerson)
 bool modifyRelation(chbrotree *p, int *idx, chbrotree *pSpouse, chbrotree *secondPerson)
 {
     // int id = *idx;
-    if (p->myinfo.sex == "male")
+    if (!strcmp(p->myinfo.sex, "male"))
     {
         rela[*idx].relation = 's';
         strcpy(rela[(*idx)++].name, p->myinfo.name);
@@ -1075,7 +1075,7 @@ bool modifyRelation(chbrotree *p, int *idx, chbrotree *pSpouse, chbrotree *secon
 
     if (pSpouse)
     {
-        if (pSpouse->myinfo.sex != secondPerson->myinfo.sex)
+        if (strcmp(pSpouse->myinfo.sex, secondPerson->myinfo.sex))
         {
             rela[*idx].relation = 'p'; //p为配偶
             strcpy(rela[(*idx)++].name, pSpouse->myinfo.name);
@@ -1206,10 +1206,19 @@ void transToAppellation(chbrotree *root, chbrotree *firstPerson, chbrotree *seco
     int indexRel = 0;        // relaStr下标
     int indexAppe = 0;       // 二维下标
     int top = 0;             // 栈顶
-    Relation relaStack[200];
-
+    Relation relaStack[MAX_PERSON_NUM];
+    for (int i = 0; i < MAX_PERSON_NUM; i++)
+    {
+        relaStack[i].relation = '\0'; // 初始化
+    }
+    for (int i = 0; i < idx; i++)
+    {
+        relaStack[i].relation = rela[i].relation; // 初始化
+        strcpy(relaStack[i].name, rela[i].name);
+    }
+    
     printf("%s is %s's ", secondPerson->myinfo.name, firstPerson->myinfo.name);
-    for (; indexRel < idx; indexRel++)
+    /* for (; indexRel < idx; indexRel++)
     {
         strcpy(relaStack[top].name, rela[indexRel].name);
         relaStack[top++].relation = rela[indexRel].relation;
@@ -1218,7 +1227,7 @@ void transToAppellation(chbrotree *root, chbrotree *firstPerson, chbrotree *seco
             top -= 2;
         }
         // relaStack[indexRel]  = rela[indexRel];
-    }
+    } */
 
     int i = 0;
     switch (relaStack[i++].relation)
@@ -1227,7 +1236,7 @@ void transToAppellation(chbrotree *root, chbrotree *firstPerson, chbrotree *seco
         printf("self.\n");
         break;
     case 'p': //p
-        if (firstPerson->myinfo.sex == "male")
+        if (strcmp(firstPerson->myinfo.sex, "male"))
             printf("wife.\n");
         else
             printf("husband.\n");
