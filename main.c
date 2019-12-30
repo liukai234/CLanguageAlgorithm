@@ -189,7 +189,7 @@ int main(int args, char *argv[])
             }
 
             break;
-        case CLEAR:
+        case CLEAR: // 
             // clear清空正在打开的数据文件
             if (fileOpenFlag)
             {
@@ -243,9 +243,7 @@ int main(int args, char *argv[])
                 PRINT_ATTR_REC
             }
             break;
-        case PRINT_BRONODE:
-
-            break;
+        
         case MODIFY:
             if (fileOpenFlag)
             {
@@ -366,13 +364,12 @@ void menuPrint()
            "load                     format: laod [*.dat]\n"
            "del                      format: del [*.dat]\n"
            "clear all date           format: clear\n"
-           "idFindWithLevelOrder     format: idFindWithLevelOrder [id]\n"
-           "nameFindWithLevelOrder   format: nameFindWithLevelOrder [name]\n"
+           "nameFindWithLevelOrder   format: nameFind [name]\n"
            "modify                   format: modify [searchName]\n"
-           "printBronode             format: printBronode\n"
            "treeInput                format: input [relation][relationName][name][sex][birth][spouse]\n"
+           "printBronode             format: printBronode [searchName]\n"
            "printTreeNode            format: printTree\n"
-           "printGenerat             format: printGenert [name][after] or printGenert [name][before][generat]\n"
+           "printGenerat             format: printGenerat [name][after] or printGenert [name][before][generat]\n"
            "findRelation             format: findRelation [name1][name2]\n"
            "exit                     format: exit\n");
 }
@@ -668,6 +665,13 @@ chbrotree *nameFindWithLevelOrder(chbrotree *root, char *name, int deep)
     return NULL;
 } */
 
+/**
+ * @description: modify
+ * @author: LiuXiaofang
+ * @param: chbrotree *root, char *name
+ * @return: chbrotree *root
+ * @ver: 1.0 2019/12/27
+ */
 chbrotree *modify(chbrotree *root, char *name)
 {
     info myinfo;
@@ -687,9 +691,16 @@ chbrotree *modify(chbrotree *root, char *name)
         return root;
     }
 }
-chbrotree *printBronode(chbrotree *root, char *name)
-{
 
+/**
+ * @description: printBrother
+ * @author: LiuXiaofang
+ * @param: chbrotree *root, char *name
+ * @return: chbrotree *root
+ * @ver: 1.0 2019/12/27
+ */
+chbrotree *printBrother(chbrotree *root, char *name)
+{
     chbrotree *p;
     p = nameFindWithLevelOrder(root, name, MAX_FIND_DEEPTH);
     if (p == NULL || p->myfather == NULL)
@@ -1256,15 +1267,11 @@ void transToAppellation(chbrotree *root, chbrotree *firstPerson, chbrotree *seco
     }
 
     printf("%s is %s's ", secondPerson->myinfo.name, firstPerson->myinfo.name);
-<<<<<<< HEAD
-    for (; indexRel < idx; indexRel++)
-=======
     // 判断自身
     if(!strcmp(firstPerson->myinfo.name, relaStack[idx - 1].name)){
         relaStack[0].relation = '\0';
     }
     /* for (; indexRel < idx; indexRel++)
->>>>>>> fe5c302d32431ad56106a5d0b9a540b465df7336
     {
         strcpy(relaStack[top].name, rela[indexRel].name);
         relaStack[top++].relation = rela[indexRel].relation;
@@ -1273,7 +1280,7 @@ void transToAppellation(chbrotree *root, chbrotree *firstPerson, chbrotree *seco
             top -= 2;
         }
         // relaStack[indexRel]  = rela[indexRel];
-    }
+    } */
 
     int i = 0;
     switch (relaStack[i++].relation)

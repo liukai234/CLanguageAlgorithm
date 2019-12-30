@@ -16,7 +16,7 @@
 
 #define MAX_FILE_NAME 100 // 文件名的长度
 #define MAX_STRING 100
-#define MENU_SEL 16         // 菜单长度宏
+#define MENU_SEL 15         // 菜单长度宏
 #define MAX_FILE_NUM 1000   // 最大文件数量
 #define MAX_FIND_DEEPTH 100 // 最大查找深度
 #define MAX_PERSON_NUM 1000 // 最大人数
@@ -36,23 +36,24 @@
 #define MODIFY 12
 #define GENERAT 13
 #define FIND_RELATION 14
-#define PRINT_BRONODE 15
-char menuSel[MENU_SEL][MAX_FILE_NAME] = {"help",
-                                         "ls",
-                                         "mk",
-                                         "open",
-                                         "close",
-                                         "del",
-                                         "printBronode",
-                                         "nameFindPerson",
-                                         "input",
-                                         "printTree",
-                                         "exit",
-                                         "clear",
-                                         "modify",
-                                         "printGenerat",
-                                         "findRelation",
-                                         "printBronode"}; // 菜单索引
+
+char menuSel[MENU_SEL][MAX_FILE_NAME] = {
+    "help",
+    "ls",
+    "mk",
+    "open",
+    "close",
+    "del",
+    "printBrother"
+    "nameFindPerson",
+    "input",
+    "printTree",
+    "exit",
+    "clear",
+    "modify",
+    "printGenerat",
+    "findRelation",
+}; // 菜单索引
 
 /**
  * @description: printfColor
@@ -149,5 +150,5 @@ chbrotree *conGeneration(chbrotree *firstPerson, chbrotree *secondPerson);
 bool modifyRelation(chbrotree *nowGeneration, int *idx, chbrotree *p, chbrotree *secondPerson);
 int difGeneration(chbrotree *root, chbrotree *firstPerson, chbrotree *secondPerson);
 void transToAppellation(chbrotree *root, chbrotree *firstPerson, chbrotree *secondPerson);
-chbrotree *printBronode(chbrotree *root, char *name);
+chbrotree *printBrother(chbrotree *root, char *name);
 #endif
