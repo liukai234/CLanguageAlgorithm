@@ -1190,50 +1190,33 @@ int difGeneration(chbrotree *root, chbrotree *firstPerson, chbrotree *secondPers
                     if (flag)
                         break;
                     idx --;
-<<<<<<< HEAD
-                    if (idx < 0) idx = 0;
-=======
                     // idx -= 2;
                     if (idx < 0)
                         idx = 0;
->>>>>>> fe5c302d32431ad56106a5d0b9a540b465df7336
                     son = son->rightsibling;
                 }
                 if (flag)
                     break;
-<<<<<<< HEAD
-                idx --;
-                if (idx < 0) idx = 0;
-=======
                 // idx -= 2;
                 idx --;
                 if (idx < 0)
                     idx = 0;
->>>>>>> fe5c302d32431ad56106a5d0b9a540b465df7336
                 brother = brother->rightsibling;
             }
             if (flag)
                 break;
             idx --;
-<<<<<<< HEAD
-            if (idx < 0) idx = 0;
-=======
             // idx -= 2;
             if (idx < 0)
                 idx = 0;
->>>>>>> fe5c302d32431ad56106a5d0b9a540b465df7336
             father = father->rightsibling;
         }
         if (flag)
             break;
         idx --;
-<<<<<<< HEAD
-        if (idx < 0) idx = 0;
-=======
         // idx -= 2;
         if (idx < 0)
             idx = 0;
->>>>>>> fe5c302d32431ad56106a5d0b9a540b465df7336
         break;
     }
     // testProject
