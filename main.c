@@ -775,7 +775,6 @@ chbrotree *treeInput(chbrotree *root, info myinfo, char *relation, char *relatio
     {
         if (!strcmp(relation, "father") || !strcmp(relation, "mother"))
         {
-
             pre = addChildToFather(pre, node);
         }
         else if (!strcmp(relation, "uncle") || !strcmp(relation, "aunt"))
@@ -814,7 +813,7 @@ chbrotree *treeInput(chbrotree *root, info myinfo, char *relation, char *relatio
             {
                 pre = pre->myfather;
                 if (pre->myfather == NULL)
-                {
+                {   
                     pre = addChildToFather(pre, node);
                 }
             }
@@ -1196,25 +1195,25 @@ int difGeneration(chbrotree *root, chbrotree *firstPerson, chbrotree *secondPers
                     }
                     if (flag)
                         break;
-                    idx -= 2;
+                    idx --;
                     if (idx < 0) idx = 0;
                     son = son->rightsibling;
                 }
                 if (flag)
                     break;
-                idx -= 2;
+                idx --;
                 if (idx < 0) idx = 0;
                 brother = brother->rightsibling;
             }
             if (flag)
                 break;
-            idx -= 2;
+            idx --;
             if (idx < 0) idx = 0;
             father = father->rightsibling;
         }
         if (flag)
             break;
-        idx -= 2;
+        idx --;
         if (idx < 0) idx = 0;
         break;
     }
@@ -1255,7 +1254,7 @@ void transToAppellation(chbrotree *root, chbrotree *firstPerson, chbrotree *seco
     }
 
     printf("%s is %s's ", secondPerson->myinfo.name, firstPerson->myinfo.name);
-    /* for (; indexRel < idx; indexRel++)
+    for (; indexRel < idx; indexRel++)
     {
         strcpy(relaStack[top].name, rela[indexRel].name);
         relaStack[top++].relation = rela[indexRel].relation;
@@ -1264,7 +1263,7 @@ void transToAppellation(chbrotree *root, chbrotree *firstPerson, chbrotree *seco
             top -= 2;
         }
         // relaStack[indexRel]  = rela[indexRel];
-    } */
+    }
 
     int i = 0;
     switch (relaStack[i++].relation)
