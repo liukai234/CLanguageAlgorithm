@@ -144,7 +144,7 @@ void printTreeNode(chbrotree *root);
 void generationPrintTreeNode(chbrotree *root, int generation);
 void printCondition(chbrotree *root, char *name, char *direction, int generation);
 chbrotree *conGeneration(chbrotree *firstPerson, chbrotree *secondPerson);
-bool modifyRelation(chbrotree *p, int *idx, chbrotree *pSpouse, chbrotree *secondPerson);
+bool modifyRelation(chbrotree *nowGeneration, int *idx, chbrotree *p, chbrotree *secondPerson);
 int difGeneration(chbrotree *root, chbrotree *firstPerson, chbrotree *secondPerson);
 void transToAppellation(chbrotree *root, chbrotree *firstPerson, chbrotree *secondPerson);
 #endif

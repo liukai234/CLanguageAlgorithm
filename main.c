@@ -938,7 +938,7 @@ void printTreeNode(chbrotree *root)
 // add printcondition
 /**
  * @description: printCondition
- * @author: LiuXiaoxia
+ * @author: LiuXiaofang
  * @param: chbrotree *root, int generation
  * @return: void
  * @ver: 1.0 2019/12/24
@@ -1033,17 +1033,17 @@ void isSpouse (char *s, chbrotree *person, char *name)
 chbrotree *conGeneration(chbrotree *firstPerson, chbrotree *secondPerson)
 {
     chbrotree *p = firstPerson;
-    if (p->myfather != NULL)
+    /*if (p->myfather != NULL)
     {
         p = p->myfather;
         if (p->firstchild != NULL)
         {
             p = p->firstchild;
         }
-    }
+    }*/
     while (p)
     {
-        if (p->myinfo.name == secondPerson->myinfo.name || p->myinfo.spouse == secondPerson->myinfo.name)
+        if (!strcmp(p->myinfo.name, secondPerson->myinfo.name) || !strcmp(p->myinfo.spouse, secondPerson->myinfo.name))
         {
             return p;
         }
@@ -1055,34 +1055,31 @@ chbrotree *conGeneration(chbrotree *firstPerson, chbrotree *secondPerson)
 /**
  * @description: modifyRelation
  * @author: LiuXiaoxia
- * @param: chbrotree *p, int *idx, chbrotree *pSpouse, chbrotree *secondPerson
+ * @param: chbrotree *p, int *idx, chbrotree *secondPerson
  * @return: bool
  * @ver: 1.0 2019/12/25
  */
-bool modifyRelation(chbrotree *p, int *idx, chbrotree *pSpouse, chbrotree *secondPerson)
+bool modifyRelation(chbrotree *nowGeneration, int *idx, chbrotree *p, chbrotree *secondPerson)
 {
     // int id = *idx;
-    if (!strcmp(p->myinfo.sex, "male"))
+    if (!strcmp(nowGeneration->myinfo.sex, "male"))
     {
         rela[*idx].relation = 's';
-        strcpy(rela[(*idx)++].name, p->myinfo.name);
+        strcpy(rela[(*idx)++].name, nowGeneration->myinfo.name);
     }
     else
     {
         rela[*idx].relation = 'd';
-        strcpy(rela[(*idx)++].name, p->myinfo.name);
+        strcpy(rela[(*idx)++].name, nowGeneration->myinfo.name);
     }
 
-    if (pSpouse)
+    if (p == NULL) return false;
+    if (strcmp(p->myinfo.sex, secondPerson->myinfo.sex))
     {
-        if (strcmp(pSpouse->myinfo.sex, secondPerson->myinfo.sex))
-        {
-            rela[*idx].relation = 'p'; //p为配偶
-            strcpy(rela[(*idx)++].name, pSpouse->myinfo.name);
-        }
-        return true;
+        rela[*idx].relation = 'p'; //p为配偶
+        strcpy(rela[(*idx)++].name, p->myinfo.name);
     }
-    return false;
+    return true;
 }
 
 /**
@@ -1120,7 +1117,7 @@ int difGeneration(chbrotree *root, chbrotree *firstPerson, chbrotree *secondPers
         p = conGeneration(grandfather, secondPerson);
         if (p)
         {
-            if (p->myinfo.sex != secondPerson->myinfo.sex)
+            if (strcmp(p->myinfo.sex, secondPerson->myinfo.sex))
             {
                 rela[idx].relation = 'p';
                 strcpy(rela[idx++].name, p->myinfo.name);
@@ -1159,26 +1156,32 @@ int difGeneration(chbrotree *root, chbrotree *firstPerson, chbrotree *secondPers
                         flag = modifyRelation(grandson, &idx, p, secondPerson);
                         if (flag)
                             break;
+                        idx--;
+                        if (idx < 0) idx = 0;
                         grandson = grandson->rightsibling;
                     }
                     if (flag)
                         break;
                     idx -= 2;
+                    if (idx < 0) idx = 0;
                     son = son->rightsibling;
                 }
                 if (flag)
                     break;
                 idx -= 2;
+                if (idx < 0) idx = 0;
                 brother = brother->rightsibling;
             }
             if (flag)
                 break;
             idx -= 2;
+            if (idx < 0) idx = 0;
             father = father->rightsibling;
         }
         if (flag)
             break;
         idx -= 2;
+        if (idx < 0) idx = 0;
         break;
     }
     // testProject
@@ -1216,7 +1219,7 @@ void transToAppellation(chbrotree *root, chbrotree *firstPerson, chbrotree *seco
         relaStack[i].relation = rela[i].relation; // 初始化
         strcpy(relaStack[i].name, rela[i].name);
     }
-    
+
     printf("%s is %s's ", secondPerson->myinfo.name, firstPerson->myinfo.name);
     /* for (; indexRel < idx; indexRel++)
     {
