@@ -189,7 +189,7 @@ int main(int args, char *argv[])
             }
 
             break;
-        case CLEAR: // 
+        case CLEAR: //
             // clear清空正在打开的数据文件
             if (fileOpenFlag)
             {
@@ -221,9 +221,8 @@ int main(int args, char *argv[])
             }
             break;
         case PRINT_BRO_NODE:
-            printf("Enter the name to find his brother:\n");
             scanf("%s", firstName);
-            printBronode(mychbrotree, firstName);
+            printBrother(mychbrotree, firstName);
             break;
         case NAME_FIND_PERSON:
             if (fileOpenFlag)
@@ -243,7 +242,7 @@ int main(int args, char *argv[])
                 PRINT_ATTR_REC
             }
             break;
-        
+
         case MODIFY:
             if (fileOpenFlag)
             {
@@ -367,7 +366,7 @@ void menuPrint()
            "nameFindWithLevelOrder   format: nameFind [name]\n"
            "modify                   format: modify [searchName]\n"
            "treeInput                format: input [relation][relationName][name][sex][birth][spouse]\n"
-           "printBronode             format: printBronode [searchName]\n"
+           "printBrother             format: printBrother [searchName]\n"
            "printTreeNode            format: printTree\n"
            "printGenerat             format: printGenerat [name][after] or printGenert [name][before][generat]\n"
            "findRelation             format: findRelation [name1][name2]\n"
@@ -705,7 +704,7 @@ chbrotree *printBrother(chbrotree *root, char *name)
     p = nameFindWithLevelOrder(root, name, MAX_FIND_DEEPTH);
     if (p == NULL || p->myfather == NULL)
     {
-        printf("NO BROTHER OR NOT FIND!");
+        printf("NO BROTHER OR NOT FIND!\n");
         return NULL;
     }
     else
@@ -720,11 +719,12 @@ chbrotree *printBrother(chbrotree *root, char *name)
         p = p->firstchild;
         while (p)
         {
-            if (!strcmp(p->myinfo.name, name))
-                continue;
-            printf("|%-10s|%-10d|%-10s|%-10s|%-10s|%-10s|\n", p->myinfo.name, p->myinfo.id, p->myinfo.sex,
-                   p->myinfo.birth, p->myinfo.father, p->myinfo.spouse);
-            printf("+----------+----------+----------+----------+----------+----------+\n");
+            if (strcmp(p->myinfo.name, name))
+            {
+                printf("|%-10s|%-10d|%-10s|%-10s|%-10s|%-10s|\n", p->myinfo.name, p->myinfo.id, p->myinfo.sex,
+                       p->myinfo.birth, p->myinfo.father, p->myinfo.spouse);
+                printf("+----------+----------+----------+----------+----------+----------+\n");
+            }
             p = p->rightsibling;
         }
     }
@@ -839,7 +839,7 @@ chbrotree *treeInput(chbrotree *root, info myinfo, char *relation, char *relatio
 
 /**
  * @description: 释放所有节点的内存
- * @autor: liuXiaoxia
+ * @autor: LiuKai
  * @param {type}
  * @return: head;
  * @ver: 1.0 2019/12/23
@@ -1200,7 +1200,7 @@ int difGeneration(chbrotree *root, chbrotree *firstPerson, chbrotree *secondPers
                     }
                     if (flag)
                         break;
-                    idx --;
+                    idx--;
                     // idx -= 2;
                     if (idx < 0)
                         idx = 0;
@@ -1216,7 +1216,7 @@ int difGeneration(chbrotree *root, chbrotree *firstPerson, chbrotree *secondPers
             }
             if (flag)
                 break;
-            idx --;
+            idx--;
             // idx -= 2;
             if (idx < 0)
                 idx = 0;
@@ -1224,7 +1224,7 @@ int difGeneration(chbrotree *root, chbrotree *firstPerson, chbrotree *secondPers
         }
         if (flag)
             break;
-        idx --;
+        idx--;
         // idx -= 2;
         if (idx < 0)
             idx = 0;

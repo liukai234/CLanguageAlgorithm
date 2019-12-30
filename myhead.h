@@ -44,7 +44,7 @@ char menuSel[MENU_SEL][MAX_FILE_NAME] = {
     "open",
     "close",
     "del",
-    "printBrother"
+    "printBrother", 
     "nameFindPerson",
     "input",
     "printTree",
@@ -52,7 +52,7 @@ char menuSel[MENU_SEL][MAX_FILE_NAME] = {
     "clear",
     "modify",
     "printGenerat",
-    "findRelation",
+    "findRelation"
 }; // ²Ëµ¥Ë÷Òý
 
 /**
