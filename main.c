@@ -1189,28 +1189,32 @@ int difGeneration(chbrotree *root, chbrotree *firstPerson, chbrotree *secondPers
                     }
                     if (flag)
                         break;
-                    idx -= 2;
+                    idx --;
+                    // idx -= 2;
                     if (idx < 0)
                         idx = 0;
                     son = son->rightsibling;
                 }
                 if (flag)
                     break;
-                idx -= 2;
+                // idx -= 2;
+                idx --;
                 if (idx < 0)
                     idx = 0;
                 brother = brother->rightsibling;
             }
             if (flag)
                 break;
-            idx -= 2;
+            idx --;
+            // idx -= 2;
             if (idx < 0)
                 idx = 0;
             father = father->rightsibling;
         }
         if (flag)
             break;
-        idx -= 2;
+        idx --;
+        // idx -= 2;
         if (idx < 0)
             idx = 0;
         break;
@@ -1252,6 +1256,10 @@ void transToAppellation(chbrotree *root, chbrotree *firstPerson, chbrotree *seco
     }
 
     printf("%s is %s's ", secondPerson->myinfo.name, firstPerson->myinfo.name);
+    // ÅÐ¶Ï×ÔÉí
+    if(!strcmp(firstPerson->myinfo.name, relaStack[idx - 1].name)){
+        relaStack[0].relation = '\0';
+    }
     /* for (; indexRel < idx; indexRel++)
     {
         strcpy(relaStack[top].name, rela[indexRel].name);
