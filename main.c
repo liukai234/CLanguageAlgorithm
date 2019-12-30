@@ -839,7 +839,7 @@ chbrotree *treeInput(chbrotree *root, info myinfo, char *relation, char *relatio
 
 /**
  * @description: 释放所有节点的内存
- * @autor: liuXiaoxia
+ * @autor: LiuKai
  * @param {type}
  * @return: head;
  * @ver: 1.0 2019/12/23
