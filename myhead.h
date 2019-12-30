@@ -27,7 +27,7 @@
 #define OPEN 3
 #define CLOSE 4
 #define DEL 5
-#define ID_FIND_PERSON 6
+#define PRINT_BRO_NODE 6
 #define NAME_FIND_PERSON 7
 #define INPUT 8
 #define PRINT_TREE_NODE 9
@@ -43,7 +43,7 @@ char menuSel[MENU_SEL][MAX_FILE_NAME] = {"help",
                                          "open",
                                          "close",
                                          "del",
-                                         "idFindPerson",
+                                         "printBronode",
                                          "nameFindPerson",
                                          "input",
                                          "printTree",

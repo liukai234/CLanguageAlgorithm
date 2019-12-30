@@ -220,18 +220,10 @@ int main(int args, char *argv[])
                 PRINT_ATTR_REC
             }
             break;
-        case ID_FIND_PERSON:
-            if (fileOpenFlag)
-            {
-                scanf("%d", &IdFind);
-                idFindWithLevelOrder(mychbrotree, IdFind);
-            }
-            else
-            {
-                PRINT_FONT_RED
-                printf("No file is opening\n");
-                PRINT_ATTR_REC
-            }
+        case PRINT_BRO_NODE:
+            printf("Enter the name to find his brother:\n");
+            scanf("%s", firstName);
+            printBronode(mychbrotree, firstName);
             break;
         case NAME_FIND_PERSON:
             if (fileOpenFlag)
@@ -697,7 +689,7 @@ chbrotree *modify(chbrotree *root, char *name)
 }
 chbrotree *printBronode(chbrotree *root, char *name)
 {
-    printf("Enter the name to find his brother:\n");
+
     chbrotree *p;
     p = nameFindWithLevelOrder(root, name, MAX_FIND_DEEPTH);
     if (p == NULL || p->myfather == NULL)
@@ -775,10 +767,9 @@ chbrotree *treeInput(chbrotree *root, info myinfo, char *relation, char *relatio
     {
         if (!strcmp(relation, "father") || !strcmp(relation, "mother"))
         {
-
             pre = addChildToFather(pre, node);
         }
-        else if (!strcmp(relation, "uncle") || !strcmp(relation, "aunt"))
+        /* else if (!strcmp(relation, "uncle") || !strcmp(relation, "aunt"))
         {
             chbrotree *newfather = pre->myfather;
             printCondition(newfather->firstchild, newfather->firstchild->myinfo.name, "after", 1);
@@ -818,7 +809,7 @@ chbrotree *treeInput(chbrotree *root, info myinfo, char *relation, char *relatio
                     pre = addChildToFather(pre, node);
                 }
             }
-        }
+        } */
         else if (!strcmp(relation, "grandson") || !strcmp(relation, "granddaughter"))
         {
             chbrotree *newfather = pre->myfather->myfather->myfather;
@@ -1107,7 +1098,8 @@ bool modifyRelation(chbrotree *nowGeneration, int *idx, chbrotree *p, chbrotree 
         strcpy(rela[(*idx)++].name, nowGeneration->myinfo.name);
     }
 
-    if (p == NULL) return false;
+    if (p == NULL)
+        return false;
     if (strcmp(p->myinfo.sex, secondPerson->myinfo.sex))
     {
         rela[*idx].relation = 'p'; //pÎªÅäÅ¼
@@ -1191,31 +1183,36 @@ int difGeneration(chbrotree *root, chbrotree *firstPerson, chbrotree *secondPers
                         if (flag)
                             break;
                         idx--;
-                        if (idx < 0) idx = 0;
+                        if (idx < 0)
+                            idx = 0;
                         grandson = grandson->rightsibling;
                     }
                     if (flag)
                         break;
                     idx -= 2;
-                    if (idx < 0) idx = 0;
+                    if (idx < 0)
+                        idx = 0;
                     son = son->rightsibling;
                 }
                 if (flag)
                     break;
                 idx -= 2;
-                if (idx < 0) idx = 0;
+                if (idx < 0)
+                    idx = 0;
                 brother = brother->rightsibling;
             }
             if (flag)
                 break;
             idx -= 2;
-            if (idx < 0) idx = 0;
+            if (idx < 0)
+                idx = 0;
             father = father->rightsibling;
         }
         if (flag)
             break;
         idx -= 2;
-        if (idx < 0) idx = 0;
+        if (idx < 0)
+            idx = 0;
         break;
     }
     // testProject
