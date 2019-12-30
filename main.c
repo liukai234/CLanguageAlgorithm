@@ -244,7 +244,7 @@ int main(int args, char *argv[])
             }
             break;
         case PRINT_BRONODE:
-
+ 
             break;
         case MODIFY:
             if (fileOpenFlag)
@@ -1189,51 +1189,34 @@ int difGeneration(chbrotree *root, chbrotree *firstPerson, chbrotree *secondPers
                     }
                     if (flag)
                         break;
-                    idx --;
-<<<<<<< HEAD
-                    if (idx < 0) idx = 0;
-=======
+                    idx--;
                     // idx -= 2;
                     if (idx < 0)
                         idx = 0;
->>>>>>> fe5c302d32431ad56106a5d0b9a540b465df7336
                     son = son->rightsibling;
                 }
                 if (flag)
                     break;
-<<<<<<< HEAD
-                idx --;
-                if (idx < 0) idx = 0;
-=======
                 // idx -= 2;
-                idx --;
+                idx--;
                 if (idx < 0)
                     idx = 0;
->>>>>>> fe5c302d32431ad56106a5d0b9a540b465df7336
                 brother = brother->rightsibling;
             }
             if (flag)
                 break;
-            idx --;
-<<<<<<< HEAD
-            if (idx < 0) idx = 0;
-=======
+            idx--;
             // idx -= 2;
             if (idx < 0)
                 idx = 0;
->>>>>>> fe5c302d32431ad56106a5d0b9a540b465df7336
             father = father->rightsibling;
         }
         if (flag)
             break;
-        idx --;
-<<<<<<< HEAD
-        if (idx < 0) idx = 0;
-=======
+        idx--;
         // idx -= 2;
         if (idx < 0)
             idx = 0;
->>>>>>> fe5c302d32431ad56106a5d0b9a540b465df7336
         break;
     }
     // testProject
@@ -1273,15 +1256,12 @@ void transToAppellation(chbrotree *root, chbrotree *firstPerson, chbrotree *seco
     }
 
     printf("%s is %s's ", secondPerson->myinfo.name, firstPerson->myinfo.name);
-<<<<<<< HEAD
-    for (; indexRel < idx; indexRel++)
-=======
     // ÅÐ¶Ï×ÔÉí
-    if(!strcmp(firstPerson->myinfo.name, relaStack[idx - 1].name)){
+    if (!strcmp(firstPerson->myinfo.name, relaStack[idx - 1].name))
+    {
         relaStack[0].relation = '\0';
     }
     /* for (; indexRel < idx; indexRel++)
->>>>>>> fe5c302d32431ad56106a5d0b9a540b465df7336
     {
         strcpy(relaStack[top].name, rela[indexRel].name);
         relaStack[top++].relation = rela[indexRel].relation;
@@ -1290,7 +1270,7 @@ void transToAppellation(chbrotree *root, chbrotree *firstPerson, chbrotree *seco
             top -= 2;
         }
         // relaStack[indexRel]  = rela[indexRel];
-    }
+    } */
 
     int i = 0;
     switch (relaStack[i++].relation)
