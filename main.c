@@ -224,16 +224,17 @@ int main(int args, char *argv[])
             scanf("%s", firstName);
             printBrother(mychbrotree, firstName);
             break;
-        case NAME_FIND_PERSON:
+        case PRINT_SOMEONE:
             if (fileOpenFlag)
             {
                 scanf("%s", firstName);
-                if (!nameFindWithLevelOrder(mychbrotree, firstName, MAX_FIND_DEEPTH))
+                printCondition(mychbrotree, firstName, "before", 0);
+                /* if (!nameFindWithLevelOrder(mychbrotree, firstName, MAX_FIND_DEEPTH))
                 {
                     PRINT_FONT_RED
                     printf("Not fount\n");
                     PRINT_ATTR_REC
-                }
+                } */
             }
             else
             {
@@ -360,10 +361,9 @@ void menuPrint()
            "mk                       format: mk [*.dat]\n"
            "open                     format: open [*.dat]\n"
            "save and close           format: close\n"
-           "load                     format: laod [*.dat]\n"
            "del                      format: del [*.dat]\n"
            "clear all date           format: clear\n"
-           "nameFindWithLevelOrder   format: nameFind [name]\n"
+           "printSomeone             format: nameFind [name]\n"
            "modify                   format: modify [searchName]\n"
            "treeInput                format: input [relation][relationName][name][sex][birth][spouse]\n"
            "printBrother             format: printBrother [searchName]\n"
@@ -1231,11 +1231,11 @@ int difGeneration(chbrotree *root, chbrotree *firstPerson, chbrotree *secondPers
         break;
     }
     // testProject
-    for (int i = 0; i < idx; i++)
+    /* for (int i = 0; i < idx; i++)
     {
         printf("%c", rela[i].relation);
     }
-    printf("\n");
+    printf("\n"); */
 
     return idx;
 }

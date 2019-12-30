@@ -28,7 +28,7 @@
 #define CLOSE 4
 #define DEL 5
 #define PRINT_BRO_NODE 6
-#define NAME_FIND_PERSON 7
+#define PRINT_SOMEONE 7
 #define INPUT 8
 #define PRINT_TREE_NODE 9
 #define EXIT 10
@@ -45,14 +45,14 @@ char menuSel[MENU_SEL][MAX_FILE_NAME] = {
     "close",
     "del",
     "printBrother", 
-    "nameFindPerson",
+    "nameFind",
     "input",
     "printTree",
     "exit",
     "clear",
     "modify",
     "printGenerat",
-    "findRelation"
+    "findRelation",
 }; // ²Ëµ¥Ë÷Òý
 
 /**
