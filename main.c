@@ -251,6 +251,9 @@ int main(int args, char *argv[])
                 PRINT_ATTR_REC
             }
             break;
+        case PRINT_BRONODE:
+
+            break;
         case MODIFY:
             if (fileOpenFlag)
             {
@@ -374,6 +377,7 @@ void menuPrint()
            "idFindWithLevelOrder     format: idFindWithLevelOrder [id]\n"
            "nameFindWithLevelOrder   format: nameFindWithLevelOrder [name]\n"
            "modify                   format: modify [searchName]\n"
+           "printBronode             format: printBronode\n"
            "treeInput                format: input [relation][relationName][name][sex][birth][spouse]\n"
            "printTreeNode            format: printTree\n"
            "printGenerat             format: printGenert [name][after] or printGenert [name][before][generat]\n"
@@ -691,7 +695,37 @@ chbrotree *modify(chbrotree *root, char *name)
         return root;
     }
 }
-
+chbrotree *printBronode(chbrotree *root, char *name)
+{
+    printf("Enter the name to find his brother:\n");
+    chbrotree *p;
+    p = nameFindWithLevelOrder(root, name, MAX_FIND_DEEPTH);
+    if (p == NULL || p->myfather == NULL)
+    {
+        printf("NO BROTHER OR NOT FIND!");
+        return NULL;
+    }
+    else
+    {
+        PRINT_FONT_RED
+        printf(">>>\n");
+        PRINT_ATTR_REC
+        printf("+----------+----------+----------+----------+----------+----------+\n"
+               "|Name      |ID        |Sex       |Birth     |Father    |Spouse    |\n"
+               "+----------+----------+----------+----------+----------+----------+\n");
+        p = p->myfather;
+        p = p->firstchild;
+        while (p)
+        {
+            if (!strcmp(p->myinfo.name, name))
+                continue;
+            printf("|%-10s|%-10d|%-10s|%-10s|%-10s|%-10s|\n", p->myinfo.name, p->myinfo.id, p->myinfo.sex,
+                   p->myinfo.birth, p->myinfo.father, p->myinfo.spouse);
+            printf("+----------+----------+----------+----------+----------+----------+\n");
+            p = p->rightsibling;
+        }
+    }
+}
 /**
  * @description: addChildToFather
  * @author: LiuXiaoxia
