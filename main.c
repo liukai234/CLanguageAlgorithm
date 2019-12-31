@@ -820,13 +820,13 @@ chbrotree *treeInput(chbrotree *root, info myinfo, char *relation, char *relatio
                     pre = addChildToFather(pre, node);
                 }
             }
-        } */
+        } 
         else if (!strcmp(relation, "grandson") || !strcmp(relation, "granddaughter"))
         {
             chbrotree *newfather = pre->myfather->myfather->myfather;
             newfather = addChildToFather(newfather, node);
             node = addChildToFather(node, pre->myfather);
-        }
+        }*/
     }
     else
     {
