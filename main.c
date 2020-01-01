@@ -154,7 +154,7 @@ int main(int args, char *argv[])
             {
                 save(mychbrotree, outputFileName);
                 printf("Save finished\n");
-                // 没有释放内存
+                mychbrotree = delAllTree(mychbrotree);
                 mychbrotree = NULL;
                 *outputFileName = '\0';
                 fileOpenFlag = false;
@@ -674,7 +674,7 @@ chbrotree *nameFindWithLevelOrder(chbrotree *root, char *name, int deep)
 chbrotree *modify(chbrotree *root, char *name)
 {
     info myinfo;
-    printf("enter the name to modify:\n");
+    // printf("enter the name to modify:\n");
     chbrotree *p;
     p = nameFindWithLevelOrder(root, name, MAX_FIND_DEEPTH);
     if (p == NULL)
@@ -684,7 +684,7 @@ chbrotree *modify(chbrotree *root, char *name)
     }
     else
     {
-        printf("Enter the new info:\n");
+        printf("Enter the new info: [name][sex][birth][father][spouse]\n");
         scanf("%s%s%s%s%s", p->myinfo.name, p->myinfo.sex,
               p->myinfo.birth, p->myinfo.father, p->myinfo.spouse);
         return root;
@@ -820,13 +820,13 @@ chbrotree *treeInput(chbrotree *root, info myinfo, char *relation, char *relatio
                     pre = addChildToFather(pre, node);
                 }
             }
-        } */
+        } 
         else if (!strcmp(relation, "grandson") || !strcmp(relation, "granddaughter"))
         {
             chbrotree *newfather = pre->myfather->myfather->myfather;
             newfather = addChildToFather(newfather, node);
             node = addChildToFather(node, pre->myfather);
-        }
+        } */
     }
     else
     {
@@ -911,6 +911,7 @@ void printTreeNode(chbrotree *root)
     while (front < rear)
     {
         p = queue[front++];
+        if(p == NULL) break; // 根节点为空
         printf("|%-10s|%-10d|%-10s|%-10s|%-10s|%-10s|\n", p->myinfo.name, p->myinfo.id, p->myinfo.sex,
                p->myinfo.birth, p->myinfo.father, p->myinfo.spouse);
         printf("+----------+----------+----------+----------+----------+----------+\n");
