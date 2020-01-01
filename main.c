@@ -221,8 +221,17 @@ int main(int args, char *argv[])
             }
             break;
         case PRINT_BRO_NODE:
-            scanf("%s", firstName);
-            printBrother(mychbrotree, firstName);
+            if (fileOpenFlag)
+            {
+                scanf("%s", firstName);
+                printBrother(mychbrotree, firstName);
+            }
+            else
+            {
+                PRINT_FONT_RED
+                printf("No file is opening\n");
+                PRINT_ATTR_REC
+            }
             break;
         case PRINT_SOMEONE:
             if (fileOpenFlag)
@@ -302,15 +311,24 @@ int main(int args, char *argv[])
             else
             {
                 PRINT_FONT_RED
-                printf("Not save, retry\n");
+                printf("No file is opening\n");
                 PRINT_ATTR_REC
             }
             break;
         case FIND_RELATION:
             scanf("%s%s", firstName, secondName);
-            chbrotree *firstPerson = nameFindWithLevelOrder(mychbrotree, firstName, MAX_FIND_DEEPTH);
-            chbrotree *secondPerson = nameFindWithLevelOrder(mychbrotree, secondName, MAX_FIND_DEEPTH);
-            transToAppellation(mychbrotree, firstPerson, secondPerson);
+            if (fileOpenFlag)
+            {
+                chbrotree *firstPerson = nameFindWithLevelOrder(mychbrotree, firstName, MAX_FIND_DEEPTH);
+                chbrotree *secondPerson = nameFindWithLevelOrder(mychbrotree, secondName, MAX_FIND_DEEPTH);
+                transToAppellation(mychbrotree, firstPerson, secondPerson);
+            }
+            else
+            {
+                PRINT_FONT_RED
+                printf("No file is opening\n");
+                PRINT_ATTR_REC
+            }
             break;
         case EXIT:
             exitFlag = true;
@@ -911,7 +929,8 @@ void printTreeNode(chbrotree *root)
     while (front < rear)
     {
         p = queue[front++];
-        if(p == NULL) break; // 根节点为空
+        if (p == NULL)
+            break; // 根节点为空
         printf("|%-10s|%-10d|%-10s|%-10s|%-10s|%-10s|\n", p->myinfo.name, p->myinfo.id, p->myinfo.sex,
                p->myinfo.birth, p->myinfo.father, p->myinfo.spouse);
         printf("+----------+----------+----------+----------+----------+----------+\n");
@@ -1149,7 +1168,7 @@ int difGeneration(chbrotree *root, chbrotree *firstPerson, chbrotree *secondPers
         }
     }
 
-    chbrotree *grandfather = firstPerson;       
+    chbrotree *grandfather = firstPerson;
     while (grandfather)
     {
         p = conGeneration(grandfather, secondPerson);
