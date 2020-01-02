@@ -994,7 +994,7 @@ void printTreeNode(chbrotree *root)
 // add printcondition
 /**
  * @description: printCondition
- * @author: LiuXiaofang
+ * @author: liukai
  * @param: chbrotree *root, int generation
  * @return: void
  * @ver: 1.0 2019/12/24
