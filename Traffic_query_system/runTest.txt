@@ -1,0 +1,37 @@
+// 运行测试
+Windows PowerShell
+版权所有 (C) Microsoft Corporation。保留所有权利。
+
+尝试新的跨平台 PowerShell https://aka.ms/pscore6
+
+PS D:\source\C_project\Traffic_query_system> ./main
+Current Mgraph saved directory: D:\source\C_project\Traffic_query_system
+Input Type of Mgraph[directed graph is 1 and undirected graph is 0]:1
+Input "help" for help
+help
+dijkstraAlgorithm           dijkstra(Format: dijkstra [startName endName])
+floydAlgorithm              floyd(Format: floyd [startName endName]
+linkPrint                   print
+modifyTextFile              modify
+help                        help
+exit                        exit
+Execution completed
+print
+nameCity:Atest sumPersion:1000
+nameCity:Btest sumPersion:2000
+nameCity:Ctest sumPersion:3000
+nameCity:Dtest sumPersion:4000
+nameCity:Etest sumPersion:5000
+nameCity:Ftest sumPersion:6000
+Execution completed
+dijkstra Atest Dtest
+path: Atest -> Ctest -> Ftest -> Dtest
+Distancd: 25, Price: 33.8
+Execution completed
+floyd Atest Dtest
+path: Atest -> Ctest -> Ftest -> Dtest
+Distancd: 25, Price: 33.8
+Execution completed
+exit
+Execution completed
+PS D:\source\C_project\Traffic_query_system>
