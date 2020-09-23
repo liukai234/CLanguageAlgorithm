@@ -1,5 +1,6 @@
 # 20200923重构了项目, 把这些库整合到了一起
 ## 一些小的算法题、课设
+### ALGO_study_record 算法分析与设计学习记录
 ### bookManageSystem 实验四 排序方法实践（2学时）
 ### Genealogy-Management-System 题目五：家族关系查询系统
 ### Prim-algorithm prim算法
